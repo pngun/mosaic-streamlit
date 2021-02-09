@@ -1,4 +1,4 @@
-# Vignettes
+# GUI for Mosaic
 
 ### About
 
