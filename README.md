@@ -2,15 +2,8 @@
 
 ### About
 
-This repository maintains a set of vignettes showcasing
-the capabilities of the Mission Bio analysis package, [Mosaic.](https://github.com/MissionBio/mosaic)
-It also includes the code to an interactive app built using [Streamlit.](https://www.streamlit.io/)
-
-### List of vignettes
-- [Basic usage of Mosaic](https://missionbio.github.io/mosaic-vignettes/basics/basics.html)
-
-### Interactive app
-A user interface for Mosaic has been built using [Streamlit](https://www.streamlit.io/)
+This repository includes the code to an interactive app built using [Streamlit.](https://www.streamlit.io/)
+It is a user interface for [Mosaic](https://github.com/MissionBio/mosaic). 
 
 After installing [Mosaic](https://github.com/MissionBio/mosaic), install streamlit
 in the appropriate environment using:
@@ -27,6 +20,6 @@ streamlit run ./mosaic.py
 
 For s3 access, credentials have to be added to `/.aws/credentials`
 
-The downloaded h5 files must be stored under `./streamlit/h5/downloads/`
+The downloaded h5 files must be stored under `./h5/downloads/`
 to be accessible throught the UI.
 
