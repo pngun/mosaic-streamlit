@@ -15,22 +15,31 @@ if __name__ == '__main__':
 
     # Download latest code
     try:
-        print('Trying to download the latest code')
-        resp = urlopen("https://github.com/MissionBio/mosaic-streamlit/archive/master.zip")
+        while True:
+            val = input("Check for updates: yes/[no] -  ")
+            if val not in ['yes', 'no', '']:
+                print("Invalid input. Enter one of 'yes' or 'no', or press enter to skip")
+            else:
+                break
 
-        with ZipFile(BytesIO(resp.read())) as zipfile:
-            for file in zipfile.namelist()[1:]:
-                local_file = f'{launchdir}/' + '/'.join(file.split('/')[1:])
-                print('Downloading', local_file)
+        if val == 'yes':
+            resp = urlopen("https://github.com/MissionBio/mosaic-streamlit/archive/master.zip")
 
-                if local_file[-1] == '/':
-                    if not os.path.exists(local_file):
-                        os.mkdir(local_file)
-                else:
-                    with open(local_file, 'wb') as f:
-                        f.write(zipfile.read(file))
+            with ZipFile(BytesIO(resp.read())) as zipfile:
+                for file in zipfile.namelist()[1:]:
+                    local_file = f'{launchdir}/' + '/'.join(file.split('/')[1:])
+                    print('Downloading', local_file)
 
-        print('SUCCESS')
+                    if local_file[-1] == '/':
+                        if not os.path.exists(local_file):
+                            os.mkdir(local_file)
+                    else:
+                        with open(local_file, 'wb') as f:
+                            f.write(zipfile.read(file))
+
+            print('Succesfully downloaded all files')
+        else:
+            print('Skipping updates')
     except Exception:
         print('FAILED to download code. Running local version.')
 
