@@ -30,8 +30,8 @@ MOHASH = {moprotein: lambda a: a.name + a.title + str(a.shape),
 
 MOHASH_BOOL = {**MOHASH, int: lambda _: None, list: lambda _: None, type(''): lambda _: None}
 
-MOHASH_VISUALS = {moprotein: lambda a: a.name + a.title + str(a.shape) + ','.join(a.get_labels()),
-                  modna: lambda a: a.name + a.title + str(a.shape) + ','.join(a.get_labels()),
+MOHASH_VISUALS = {moprotein: lambda a: a.name + a.title + str(a.shape) + ','.join(a.get_labels()) + ','.join(a.get_palette().keys()) + ','.join(a.get_palette().values()),
+                  modna: lambda a: a.name + a.title + str(a.shape) + ','.join(a.get_labels()) + ','.join(a.get_palette().keys()) + ','.join(a.get_palette().values()),
                   mosample: lambda a: a.name + str(a.dna.shape),
                   type(lambda _: None): lambda _: None}
 
