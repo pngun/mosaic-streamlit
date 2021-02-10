@@ -38,7 +38,7 @@ def run(sample):
 
 
 def render(sample, assay_names):
-    with st.sidebar.beta_expander('Prepocessing'):
+    with st.sidebar.beta_expander('Preprocessing'):
         info = st.empty()
 
         assay_name = {
