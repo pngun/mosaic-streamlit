@@ -14,8 +14,8 @@ from tasks import (
 
 st.set_page_config(page_title='Mosaic', layout='wide')
 interface.init()
-interface.subheader('---')
-interface.status('Processing')
+interface.subheader('GUI for Mosaic built using Streamlit')
+interface.status('v0.1')
 
 sample, should_save, save_name = load.run()
 
