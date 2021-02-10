@@ -63,7 +63,8 @@ def render(sample, assay):
         elif kind == DFT.HEATMAP:
             kwargs['attribute'] = st.selectbox('Attribute', DFT.LAYERS[assay.name], key='Visualization Attribute')
             kwargs['splitby'] = st.selectbox('Split by', DFT.SPLITBY[assay.name])
-            kwargs['cluster'] = st.checkbox('Hierarchical cluster', True)
+            kwargs['orderby'] = st.selectbox('Order by', DFT.LAYERS[assay.name], key='Visualization Orderby')
+            kwargs['cluster'] = st.checkbox('Cluster within labels', True)
             kwargs['convolve'] = st.slider('Smoothing', 0, 100)
         elif kind == DFT.SCATTERPLOT:
             kwargs['attribute'] = st.selectbox('Attribute', DFT.ATTRS_2D)
@@ -148,15 +149,6 @@ def visual(sample, assay, kind, plot_columns, kwargs):
                 df = std
             elif kwargs['attribute'] == 'p-value':
                 df = pval.applymap("{0:.2E}".format)
-
-            df2, std, pval, _ = assay.feature_signature(layer='AF')
-            df, std, pval, _ = assay.feature_signature(layer='NGT')
-            df = df.astype(int).astype(str)
-            df[df == '2'] = 'HOM'
-            df[df == '1'] = 'HET'
-            df[df == '0'] = 'WT'
-            df2 = df2.astype(int).astype(str)
-            df = df + ' (' + df2 + '%)'
 
             df['Variant'] = df.index
             df = df.reset_index(drop=True)
@@ -245,7 +237,8 @@ def draw_plots(sample, assay, kind, kwargs):
         assay.set_palette(new_pal)
 
         if 'cluster' in kwargs:
-            bars_ordered = assay.clustered_barcodes(orderby=kwargs['attribute'])
+            bars_ordered = assay.clustered_barcodes(orderby=kwargs['orderby'])
+            ids_order = assay.clustered_ids(orderby=kwargs['orderby'])
             if not kwargs['cluster']:
                 labels = assay.get_labels()[[np.where(assay.barcodes() == b)[0][0] for b in bars_ordered]]
                 bars_ordered = []
@@ -254,7 +247,8 @@ def draw_plots(sample, assay, kind, kwargs):
                 bars_ordered = np.array(bars_ordered)
 
             kwargs['bars_order'] = bars_ordered
-            del kwargs['cluster']
+            kwargs['features'] = ids_order
+            del kwargs['cluster'], kwargs['orderby']
 
         if kind == DFT.VIOLINPLOT:
             update = kwargs['points']
