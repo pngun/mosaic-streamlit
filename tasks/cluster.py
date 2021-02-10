@@ -53,6 +53,7 @@ def render(assay):
                 description += ', and grouped missing clones'
 
             cluster_kwargs = {
+                'assay_to_count': assay,
                 'features': features,
                 'layer': layer,
                 'group_missing': group_missing,
@@ -60,7 +61,7 @@ def render(assay):
                 'ignore_zygosity': ignore_zygosity
             }
 
-            method = assay.count
+            method = count_dna
 
         elif method == 'gating':
             layer = st.selectbox('Layer', [DFT.CLR, DFT.NSP, DFT.ASINH])
@@ -78,7 +79,7 @@ def render(assay):
             fig = get_gating_plot(assay, layer, feature_x, feature_y, threshold_x, threshold_y)
             st.plotly_chart(fig)
 
-            description = f'gating on {layer}, with {feature_x}({threshold_x}) and {feature_y}({threshold_y})'
+            description = f'gating on {layer}, with {feature_x} ({threshold_x:.2f}) and {feature_y} ({threshold_y:.2f})'
 
             cluster_kwargs = {
                 'assay_to_gate': assay,
@@ -151,6 +152,19 @@ def gate_protein(assay_to_gate, layer, features, thresholds):
     lab_map[f'{features[0]}- & {features[1]}-'] = bars[np.logical_and(data[features[0]] < thresholds[0], data[features[1]] < thresholds[1])]
 
     assay_to_gate.set_labels(lab_map)
+
+
+def count_dna(assay_to_count, features, layer, group_missing, min_clone_size, ignore_zygosity):
+    df = assay_to_count.count(features=features, layer=layer, group_missing=group_missing, min_clone_size=min_clone_size, ignore_zygosity=ignore_zygosity)
+
+    if df is not None:
+        lab_map = {}
+        for clone in df.index:
+            score = df.loc[clone, 'score']
+            if score > 0:
+                new_name = f"{clone} ({score:.2f})"
+                lab_map[str(clone)] = new_name
+        assay_to_count.rename_labels(lab_map)
 
 
 @st.cache(max_entries=1, hash_funcs=DFT.MOHASH, show_spinner=False)
