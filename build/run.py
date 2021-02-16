@@ -16,7 +16,7 @@ if __name__ == '__main__':
     # Download latest code
     try:
         while True:
-            val = input("Check for updates: yes/[no] -  ")
+            val = input("Check for updates?\n(This is in active development. Features that previously worked may no longer work. This is for research purposes only.)\nyes/[no] -  ")
             if val not in ['yes', 'no', '']:
                 print("Invalid input. Enter one of 'yes' or 'no', or press enter to skip")
             else:
