@@ -4,8 +4,6 @@ from io import BytesIO
 from zipfile import ZipFile
 from urllib.request import urlopen
 
-from streamlit import cli as stcli
-
 if __name__ == '__main__':
 
     launchdir = os.path.dirname(sys.argv[0])
@@ -16,7 +14,7 @@ if __name__ == '__main__':
     # Download latest code
     try:
         while True:
-            val = input("Check for updates: yes/[no] -  ")
+            val = input("Check for updates?\n(This is in active development. Features that previously worked may no longer work. This is for research purposes only.)\nyes/[no] -  ")
             if val not in ['yes', 'no', '']:
                 print("Invalid input. Enter one of 'yes' or 'no', or press enter to skip")
             else:
@@ -42,6 +40,9 @@ if __name__ == '__main__':
             print('Skipping updates')
     except Exception:
         print('FAILED to download code. Running local version.')
+
+    # streamlit can take a while to import
+    from streamlit import cli as stcli
 
     sys.argv = ["streamlit", "run", f"{launchdir}/app.py", "--global.developmentMode=false"]
     sys.exit(stcli.main())
