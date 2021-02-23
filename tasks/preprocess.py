@@ -86,9 +86,7 @@ def first_pass_preprocess(sample, assay_args):
                 preprocess_protein(sample, True, [])
 
 
-# Want to call this function only when clicked
-# The custom hash function allows that
-@st.cache(max_entries=1, hash_funcs=DFT.MOHASH_BOOL, show_spinner=False)
+@st.cache(max_entries=1, hash_funcs=DFT.MOHASH, show_spinner=False)
 def preprocess_dna(sample, clicked, drop_vars, keep_vars, dp, gq, af, std):
     args_changed = (list(sample.dna.metadata[DFT.PREPROCESS_ARGS]) != [dp, gq, af, std]
                     or set(sample.dna.metadata[DFT.DROP_IDS]) != set(drop_vars)
@@ -121,7 +119,7 @@ def preprocess_dna(sample, clicked, drop_vars, keep_vars, dp, gq, af, std):
             sample.dna.add_metadata(DFT.CLUSTERED, False)
 
 
-@st.cache(max_entries=1, hash_funcs=DFT.MOHASH_BOOL, show_spinner=False)
+@st.cache(max_entries=1, hash_funcs=DFT.MOHASH, show_spinner=False)
 def preprocess_protein(sample, clicked, drop_abs):
     if sample.protein.metadata[DFT.INITIALIZE] or (set(sample.protein.metadata[DFT.DROP_IDS]) != set(drop_abs) and clicked):
         interface.status('Processing protein assay.')
