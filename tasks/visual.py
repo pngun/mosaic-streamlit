@@ -17,15 +17,16 @@ from missionbio.mosaic.sample import Sample as mosample
 
 
 def run(sample, assay):
-    plot_columns, kind, visualization_kwargs = render(sample, assay)
+    args_conatiner, plot_columns, category, kind = set_layout(assay)
+    visualization_kwargs = render(sample, assay, kind, args_conatiner)
     visual(sample, assay, kind, plot_columns, visualization_kwargs)
 
     interface.status('Done.')
 
+    return [category, kind]
 
-def render(sample, assay):
-    interface.status('Creating visuals.')
 
+def set_layout(assay):
     category, kind = assay.metadata[DFT.VISUAL_TYPE]
     options = DFT.VISUALS[category][1]
     column_sizes = DFT.VISUALS[category][0]
@@ -52,6 +53,12 @@ def render(sample, assay):
         columns = st.beta_columns([0.75, 0.1, 2])
         args_conatiner = columns[0]
         plot_columns = columns[2]
+
+    return args_conatiner, plot_columns, category, kind
+
+
+def render(sample, assay, kind, args_conatiner):
+    interface.status('Creating visuals.')
 
     with args_conatiner:
         kwargs = {}
@@ -127,7 +134,7 @@ def render(sample, assay):
             kwargs['item'] = st.selectbox('Object to Download', DFT.DOWNLOAD_ITEMS)
             kwargs['download'] = st.button('Download', key='download_button')
 
-    return plot_columns, kind, kwargs
+    return kwargs
 
 
 def visual(sample, assay, kind, plot_columns, kwargs):
@@ -200,7 +207,7 @@ def visual(sample, assay, kind, plot_columns, kwargs):
                 st.pyplot(plt.gcf())
 
 
-@st.cache(max_entries=50, hash_funcs=DFT.MOHASH_VISUALS, show_spinner=False, allow_output_mutation=True, ttl=3600)
+@st.cache(max_entries=50, hash_funcs=DFT.MOHASH_COMPLETE, show_spinner=False, allow_output_mutation=True, ttl=3600)
 def draw_plots(sample, assay, kind, kwargs):
     if kind in [DFT.HEATMAP, DFT.SCATTERPLOT, DFT.FEATURE_SCATTER, DFT.VIOLINPLOT, DFT.RIDGEPLOT, DFT.STRIPPLOT]:
         plot_funcs = {

@@ -25,13 +25,26 @@ from missionbio.mosaic.sample import Sample as mosample
 
 MOHASH = {moprotein: lambda a: a.name + a.title + str(a.shape),
           modna: lambda a: a.name + a.title + str(a.shape),
-          mosample: lambda a: a.name + str(a.dna.shape),
-          type(lambda _: None): lambda _: None}
+          mosample: lambda a: a.name + str(a.dna.shape)}
 
-MOHASH_VISUALS = {moprotein: lambda a: a.name + a.title + str(a.shape) + ','.join(a.get_labels()) + ','.join(a.get_palette().keys()) + ','.join(a.get_palette().values()),
-                  modna: lambda a: a.name + a.title + str(a.shape) + ','.join(a.get_labels()) + ','.join(a.get_palette().keys()) + ','.join(a.get_palette().values()),
-                  mosample: lambda a: a.name + str(a.dna.shape),
-                  type(lambda _: None): lambda _: None}
+
+def assay_hash(a):
+    name = a.name
+    title = a.title
+    shape = str(a.shape)
+    palet = ','.join(a.get_palette().keys()) + ','.join(a.get_palette().values())
+    labs = ','.join(a.get_labels())
+
+    hash_val = name + shape + title + labs + palet
+
+    for k in a.row_attrs:
+        data = a.row_attrs[k].flatten().astype(str)
+        hash_val += ','.join(data)
+
+    return hash_val
+
+
+MOHASH_COMPLETE = {moprotein: assay_hash, modna: assay_hash, mosample: lambda a: a.name + str(a.dna.shape)}
 
 ROOT = pathlib.Path(__file__).parent
 

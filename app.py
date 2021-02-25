@@ -1,7 +1,6 @@
 import streamlit as st
 
 import interface
-import defaults as DFT
 from tasks import (
     load,
     preprocess,
@@ -23,10 +22,12 @@ current_assay, available_assays = preprocess.run(sample)
 
 prepare.run(current_assay, available_assays)
 cluster.run(current_assay, available_assays)
-customize.run(current_assay)
-save.run(sample, save_name, should_save)
 
-visual.run(sample, current_assay)
+sample_kept, current_assay_kept = customize.run(sample, current_assay)
 
-for a in available_assays:
-    a.add_metadata(DFT.INITIALIZE, False)
+visual_type = visual.run(sample_kept, current_assay_kept)
+
+if should_save:
+    save.run(sample_kept, save_name)
+
+save.store_metadata(sample, current_assay, visual_type, available_assays)

@@ -5,9 +5,14 @@ import interface
 import defaults as DFT
 
 
-def run(assay):
-    lab_map, pal = render(assay)
-    customize(assay, lab_map, pal)
+def run(sample, assay):
+    lab_map, pal, keep_labs = render(assay)
+
+    customize_labels(assay, lab_map, pal)
+
+    sample_kept, assay_kept = filter_sample(sample, assay, keep_labs)
+
+    return sample_kept, assay_kept
 
 
 def render(assay):
@@ -15,25 +20,36 @@ def render(assay):
         interface.info('Rename the labels.<br>Merge by giving the same name.')
 
         lab_map = {}
+        keep_labs = []
         pal = assay.get_palette()
-        for lab in np.unique(assay.get_labels()):
-            col1, col2 = st.beta_columns([1, 0.15])
+
+        lab_set = np.unique(assay.get_labels())
+        for lab in lab_set:
+            col1, col2, col3 = st.beta_columns([1, 0.1, 0.07])
             with col1:
                 new_name = st.text_input(f'Give a new name to {lab}', lab)
             with col2:
                 st.markdown(f"<p style='margin-bottom:34px'></p>", unsafe_allow_html=True)
                 pal[lab] = st.color_picker('', pal[lab], key=f'colorpicker-{lab}')
+            with col3:
+                st.markdown(f"<p style='margin-bottom:42px'></p>", unsafe_allow_html=True)
+                keep = st.checkbox('', True, key=f'keep-cells-{lab}-{lab_set}')
+                if keep:
+                    keep_labs.append(lab)
 
             if new_name != lab:
                 lab_map[lab] = new_name
                 pal[new_name] = pal[lab]
                 del pal[lab]
 
-    return lab_map, pal
+    if len(keep_labs) == 0:
+        interface.error('At least one label must be selected.')
+
+    return lab_map, pal, keep_labs
 
 
 @st.cache(max_entries=1, hash_funcs=DFT.MOHASH, show_spinner=False)
-def customize(assay, lab_map, pal):
+def customize_labels(assay, lab_map, pal):
     old_labs = set(assay.get_labels())
     old_pal = assay.get_palette()
     assay.rename_labels(lab_map)
@@ -42,3 +58,11 @@ def customize(assay, lab_map, pal):
 
     if new_labs != old_labs or old_pal != pal:
         interface.rerun()
+
+
+@st.cache(max_entries=1, hash_funcs=DFT.MOHASH_COMPLETE, show_spinner=False, allow_output_mutation=True)
+def filter_sample(sample, assay, keep_labs):
+    assay_kept = assay[assay.barcodes(keep_labs), :]
+    sample_kept = sample[assay.barcodes(keep_labs)]
+
+    return sample_kept, assay_kept
