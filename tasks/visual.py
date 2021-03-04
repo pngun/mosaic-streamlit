@@ -1,4 +1,5 @@
 import os
+import shutil
 import pandas as pd
 import numpy as np
 import streamlit as st
@@ -180,12 +181,68 @@ def visual(sample, assay, kind, plot_columns, kwargs):
         with plot_columns:
             if kwargs['download']:
                 if kwargs['item'] == DFT.ANNOTATION:
-                    data = np.array([sample.dna.barcodes(), sample.dna.get_labels(), sample.protein.get_labels()]).T
-                    df = pd.DataFrame(data, columns=['barcode', 'dna', 'protein'])
+                    header = ['barcode']
+                    data = [sample.dna.barcodes()]
+                    for assay in [sample.dna, sample.protein]:
+                        if assay is not None:
+                            data.append(assay.get_labels())
+                            header.append(assay.name)
+                    data = np.array(data).T
+                    df = pd.DataFrame(data, columns=header)
                     name = f'./{sample.name}.annotation.csv'
                     df.to_csv(name, index=None)
                     interface.download(name)
                     os.remove(name)
+                elif kwargs['item'] == DFT.FEATURE_SIGNATURES:
+                    name = f'./{sample.name}.signatures'
+                    if os.path.exists(name):
+                        shutil.rmtree(name)
+
+                    os.mkdir(name)
+
+                    for assay in [sample.dna, sample.cnv, sample.protein]:
+                        if assay is not None:
+                            os.mkdir(f'{name}/{assay.name}')
+
+                            for layer in assay.layers.keys():
+                                df, _, _, _ = assay.feature_signature(layer)
+                                df.to_csv(f'{name}/{assay.name}/{layer}.signature.csv')
+
+                    shutil.make_archive(f'{name}', 'zip', name)
+                    interface.download(f'{name}.zip')
+                    shutil.rmtree(name)
+                    os.remove(f'{name}.zip')
+                elif kwargs['item'] == DFT.ALL_DATA:
+                    name = f'./{sample.name}.data'
+                    if os.path.exists(name):
+                        shutil.rmtree(name)
+
+                    os.mkdir(name)
+
+                    for assay in [sample.dna, sample.cnv, sample.protein]:
+                        if assay is not None:
+                            os.mkdir(f'{name}/{assay.name}')
+                            os.mkdir(f'{name}/{assay.name}/layers')
+                            os.mkdir(f'{name}/{assay.name}/rows')
+
+                            for layer in assay.layers.keys():
+                                df = assay.get_attribute(layer, constraint='row+col')
+                                cols = list(df.columns.values)
+                                df.loc[:, 'label'] = assay.get_labels()
+                                df = df.loc[:, ['label'] + cols]
+                                df.to_csv(f'{name}/{assay.name}/layers/{layer}.csv')
+
+                            for row in assay.row_attrs.keys():
+                                df = assay.get_attribute(row, constraint='row')
+                                cols = list(df.columns.values)
+                                df.loc[:, 'label'] = assay.get_labels()
+                                df = df.loc[:, ['label'] + cols]
+                                df.to_csv(f'{name}/{assay.name}/rows/{row}.csv')
+
+                    shutil.make_archive(f'{name}', 'zip', name)
+                    interface.download(f'{name}.zip')
+                    shutil.rmtree(name)
+                    os.remove(f'{name}.zip')
 
     elif kind == DFT.DNA_PROTEIN_PLOT:
         with plot_columns:
