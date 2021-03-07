@@ -62,6 +62,7 @@ def render(sample, assay_names):
                 interface.error('Cannot keep and drop variants both. Choose only one of the options')
 
             assay_args = [drop_vars, keep_vars, dp, gq, af, std]
+            n_features = sample.dna.shape[1]
 
         elif assay_type == PROTEIN_ASSAY:
             ids = sample.protein.metadata[DFT.ALL_IDS]
@@ -69,8 +70,9 @@ def render(sample, assay_names):
             drop_abs = st.multiselect('Antibodies to discard', ids, default=sample.protein.metadata[DFT.DROP_IDS])
 
             assay_args = [drop_abs]
+            n_features = sample.protein.shape[1]
 
-        interface.info(f'{assay_type} currently loaded', info)
+        interface.info(f'{assay_type} currently loaded with {n_features} features available', info)
 
         clicked = st.button('Process')
 
