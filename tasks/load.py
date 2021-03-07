@@ -35,7 +35,7 @@ def render():
             load_raw = st.checkbox('Raw')
         with col2:
             st.markdown(f"<sup><p style='margin-bottom:22px'></p></sup>", unsafe_allow_html=True)
-            apply_filter = st.checkbox('Filter', True)
+            apply_filter = st.checkbox('Filter', False)
 
         link = st.text_input('Load from s3', value='')
 
