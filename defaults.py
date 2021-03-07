@@ -29,13 +29,9 @@ MOHASH = {moprotein: lambda a: a.name + a.title + str(a.shape),
 
 
 def assay_hash(a):
-    name = a.name
-    title = a.title
-    shape = str(a.shape)
     palet = ','.join(a.get_palette().keys()) + ','.join(a.get_palette().values())
-    labs = ','.join(a.get_labels())
 
-    hash_val = name + shape + title + labs + palet
+    hash_val = a.name + str(a.shape) + a.title + palet
 
     for k in a.row_attrs:
         data = a.row_attrs[k].flatten().astype(str)
@@ -44,7 +40,17 @@ def assay_hash(a):
     return hash_val
 
 
-MOHASH_COMPLETE = {moprotein: assay_hash, modna: assay_hash, mosample: lambda a: a.name + str(a.dna.shape)}
+def sample_hash(s):
+    hash_val = s.name + str(s.dna.shape)
+
+    for a in [s.dna, s.cnv, s.protein]:
+        if a is not None:
+            hash_val += assay_hash(a)
+
+    return hash_val
+
+
+MOHASH_COMPLETE = {moprotein: assay_hash, modna: assay_hash, mosample: sample_hash}
 
 ROOT = pathlib.Path(__file__).parent
 
