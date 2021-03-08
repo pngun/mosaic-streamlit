@@ -118,7 +118,8 @@ VISUAL_TYPE = '__mosaic_visual_type'
 
 VISUAL_CATEGORY_1 = 'Plots'
 VISUAL_CATEGORY_2 = 'Tables'
-VISUAL_CATEGORY_3 = 'Multiomic plots'
+VISUAL_CATEGORY_3 = 'Multisample plots'
+VISUAL_CATEGORY_4 = 'Multiomic plots'
 
 HEATMAP = 'Heatmap'
 SCATTERPLOT = 'Scatterplot'
@@ -133,6 +134,9 @@ SIGNATURES = 'Signatures'
 COLORS = 'Colors'
 METRICS = 'Metrics'
 DOWNLOAD = 'Download'
+
+FISHPLOT = 'Fish plot'
+BARPLOT = 'Bar plot'
 
 DNA_PROTEIN_PLOT = 'DNA vs Protein'
 DNA_PROTEIN_HEATMAP = 'Sample Heatmap'
@@ -158,7 +162,11 @@ VISUALS = {VISUAL_CATEGORY_1: [[2, 1, 1.1, 1.45, 1, 1, 1, 5],
                                 METRICS,
                                 DOWNLOAD]],
 
-           VISUAL_CATEGORY_3: [[1.8, 1.35, 1.25, 1, 1.5, 5],
+           VISUAL_CATEGORY_3: [[1.8, 0.85, 1, 9],
+                               [FISHPLOT,
+                                BARPLOT]],
+
+           VISUAL_CATEGORY_4: [[1.8, 1.35, 1.25, 1, 1.5, 5],
                                [DNA_PROTEIN_HEATMAP,
                                 DNA_PROTEIN_PLOT,
                                 READ_DEPTH,
