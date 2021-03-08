@@ -12,7 +12,7 @@ from plotly.subplots import make_subplots
 import interface
 import defaults as DFT
 
-from missionbio.h5.constants import PROTEIN_ASSAY
+from missionbio.h5.constants import PROTEIN_ASSAY, SAMPLE
 from missionbio.mosaic.constants import READS, COLORS
 from missionbio.mosaic.sample import Sample as mosample
 
@@ -106,6 +106,30 @@ def render(sample, assay, kind, args_conatiner):
             features = st.multiselect('Features', list(assay.ids()), list(assay.ids())[:min(len(assay.ids()), 4)])
             if len(features) != 0:
                 kwargs['features'] = features
+        elif kind == DFT.FISHPLOT:
+            samples = list(set(assay.row_attrs[SAMPLE]))
+            labels = list(set(assay.get_labels()))
+
+            kwargs['sample_order'] = st.multiselect('Sample Order', samples)
+            kwargs['label_order'] = st.multiselect('Label Order', labels)
+            if len(kwargs['sample_order']) == 0:
+                kwargs['sample_order'] = samples
+            if len(kwargs['label_order']) == 0:
+                kwargs['label_order'] = labels
+
+            if len(kwargs['sample_order']) == 1:
+                interface.error('More than one sample required for a fish plot.')
+
+        elif kind == DFT.BARPLOT:
+            samples = list(set(assay.row_attrs[SAMPLE]))
+            labels = list(set(assay.get_labels()))
+            kwargs['sample_order'] = st.multiselect('Sample Order', samples)
+            kwargs['label_order'] = st.multiselect('Label Order', labels)
+            if len(kwargs['sample_order']) == 0:
+                kwargs['sample_order'] = samples
+            if len(kwargs['label_order']) == 0:
+                kwargs['label_order'] = labels
+            kwargs['percentage'] = st.checkbox('Percentage', False)
         elif kind == DFT.DNA_PROTEIN_PLOT:
             kwargs['analyte'] = st.selectbox('Analyte', ['protein'], format_func=lambda a: analyte_map[a])
             kwargs['dna_features'] = st.multiselect('DNA features', list(sample.dna.ids()), sample.dna.ids()[:4])
@@ -139,7 +163,7 @@ def render(sample, assay, kind, args_conatiner):
 
 
 def visual(sample, assay, kind, plot_columns, kwargs):
-    if kind in [DFT.HEATMAP, DFT.SCATTERPLOT, DFT.FEATURE_SCATTER, DFT.VIOLINPLOT, DFT.RIDGEPLOT, DFT.STRIPPLOT, DFT.DNA_PROTEIN_HEATMAP]:
+    if kind in [DFT.HEATMAP, DFT.SCATTERPLOT, DFT.FEATURE_SCATTER, DFT.VIOLINPLOT, DFT.RIDGEPLOT, DFT.STRIPPLOT, DFT.DNA_PROTEIN_HEATMAP, DFT.FISHPLOT, DFT.BARPLOT]:
         with plot_columns:
             fig = draw_plots(sample, assay, kind, kwargs)
             st.plotly_chart(fig)
@@ -325,6 +349,12 @@ def draw_plots(sample, assay, kind, kwargs):
 
         assay.set_labels(org_lab)
         assay.set_palette(org_pal)
+
+    elif kind == DFT.FISHPLOT:
+        fig = assay.fishplot(**kwargs)
+
+    elif kind == DFT.BARPLOT:
+        fig = assay.barplot(**kwargs)
 
     elif kind == DFT.DNA_PROTEIN_HEATMAP:
         samp = mosample(protein=sample.protein[:, kwargs['protein_features']], dna=sample.dna[:, kwargs['dna_features']])
