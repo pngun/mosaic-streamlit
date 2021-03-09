@@ -25,7 +25,7 @@ from missionbio.mosaic.sample import Sample as mosample
 
 MOHASH = {moprotein: lambda a: a.name + a.title + str(a.shape),
           modna: lambda a: a.name + a.title + str(a.shape),
-          mosample: lambda a: a.name + str(a.dna.shape)}
+          mosample: lambda s: s.name + str(s.dna.shape) + s.load_time}
 
 
 def assay_hash(a):
@@ -41,7 +41,7 @@ def assay_hash(a):
 
 
 def sample_hash(s):
-    hash_val = s.name + str(s.dna.shape)
+    hash_val = s.name + str(s.dna.shape) + s.load_time
 
     for a in [s.dna, s.cnv, s.protein]:
         if a is not None:

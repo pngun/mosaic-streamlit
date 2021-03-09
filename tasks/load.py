@@ -6,6 +6,8 @@ import streamlit as st
 import defaults as DFT
 import interface
 
+import time
+
 import missionbio.mosaic.io as mio
 
 
@@ -135,6 +137,7 @@ def load(path, load_raw, apply_filter):
     interface.status('Reading h5 file.')
 
     sample = mio.load(path, apply_filter=apply_filter, raw=load_raw)
+    sample.load_time = str(time.time())
 
     if sample.protein is not None:
         try:
