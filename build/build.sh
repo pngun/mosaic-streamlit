@@ -2,15 +2,13 @@ pyinstaller --additional-hooks-dir=hooks \
 			--hidden-import missionbio.mosaic \
 			--hidden-import missionbio.h5 \
 			--hidden-import plotly \
-			--clean run.py
+			--clean --onefile run.py
 
 rm -r ./build ./run.spec
 
 mkdir mosaic-streamlit-mac
-mv ./dist/run ./mosaic-streamlit-mac/libs
+mv ./dist/run ./mosaic-streamlit-mac/run
 rm -r dist
-
-ln -s ./libs/run mosaic-streamlit-mac/run-streamlit
 
 cd ..
 git archive -o latest.zip HEAD
@@ -20,4 +18,4 @@ unzip latest.zip
 rm latest.zip
 cd ..
 
-zip -r -X mosaic-streamlit-mac.zip build
+# zip -r -X mosaic-streamlit-mac.zip mosaic-streamlit-mac

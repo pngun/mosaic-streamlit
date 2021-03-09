@@ -10,8 +10,6 @@ if __name__ == '__main__':
 
     if launchdir == '':
         launchdir = '.'
-    else:
-        launchdir = '/'.join(launchdir.split('/')[:-1])
 
     print('Launch dir ', launchdir)
 
