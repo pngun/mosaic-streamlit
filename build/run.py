@@ -10,11 +10,15 @@ if __name__ == '__main__':
 
     if launchdir == '':
         launchdir = '.'
+    else:
+        launchdir = '/'.join(launchdir.split('/')[:-1])
+
+    print('Launch dir ', launchdir)
 
     # Download latest code
     try:
         while True:
-            val = input("Check for updates?\n(This is in active development. Features that previously worked may no longer work. This is for research purposes only.)\nyes/[no] -  ")
+            val = input("\nCheck for updates?\n(This is in active development. Features that previously worked may no longer work. This is for research purposes only.)\nyes/[no] -  ")
             if val not in ['yes', 'no', '']:
                 print("Invalid input. Enter one of 'yes' or 'no', or press enter to skip")
             else:
@@ -38,8 +42,8 @@ if __name__ == '__main__':
             print('Succesfully downloaded all files')
         else:
             print('Skipping updates')
-    except Exception:
-        print('FAILED to download code. Running local version.')
+    except Exception as e:
+        print(f'FAILED to download code. Running local version.\n{e}')
 
     # streamlit can take a while to import
     from streamlit import cli as stcli
