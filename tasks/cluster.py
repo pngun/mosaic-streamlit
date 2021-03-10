@@ -128,7 +128,7 @@ def first_pass_cluster(available_assays):
             cluster(prep_assay, prep_assay.cluster, description, **cluster_kwargs)
 
 
-@st.cache(max_entries=1, hash_funcs=DFT.MOHASH, show_spinner=False)
+# @st.cache(max_entries=1, hash_funcs=DFT.MOHASH, show_spinner=False)
 def get_gating_plot(assay, layer, feature_x, feature_y, threshold_x, threshold_y):
     fig = assay.feature_scatter(layer=layer, ids=[feature_x, feature_y], colorby='density')
     fig.add_hline(y=threshold_y, line_width=2)
@@ -167,7 +167,7 @@ def count_dna(assay_to_count, features, layer, group_missing, min_clone_size, ig
         assay_to_count.rename_labels(lab_map)
 
 
-@st.cache(max_entries=1, hash_funcs=DFT.MOHASH, show_spinner=False)
+# @st.cache(max_entries=1, hash_funcs=DFT.MOHASH, show_spinner=False)
 def cluster(assay, method_func, description, **kwargs):
     similarity = None
     if 'similarity' in kwargs:

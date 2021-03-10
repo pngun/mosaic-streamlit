@@ -58,7 +58,7 @@ def first_pass_prepare(available_assays):
                 prepare(prep_assay, DFT.LAYERS[prep_assay.name][0], SCALED_LABEL, PCA_LABEL, min(len(prep_assay.ids()), 8))
 
 
-@st.cache(max_entries=1, hash_funcs=DFT.MOHASH, show_spinner=False)
+# @st.cache(max_entries=1, hash_funcs=DFT.MOHASH, show_spinner=False)
 def prepare(assay, scale_attribute, pca_attribute, umap_attribute, pca_comps):
     interface.status(f'Preparing {assay.name.replace("_", " ")} data.')
 
