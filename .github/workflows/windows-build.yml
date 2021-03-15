@@ -27,10 +27,34 @@ jobs:
       - run: cd build && ./build.ps1
       - run: ls build
       - run: ls build/dist
-      - run: 7z a -r -tzip mosaic-streamlit-windows.zip build/dist/run
+      - run: 7z a -r -tzip mosaic-streamlit-windows-runtime.zip build/dist/run
         
       - uses: actions/upload-artifact@v2
         with:
           name: mosaic-streamlit-windows.zip
           path: mosaic-streamlit-windows.zip
+
+  build-electron:
+    name: Build Electron app
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - run: node --version
+      - run: cd mosaic-streamlit && yarn install && yarn run make
+      - run: ls -R mosaic-streamlit
+        
+      - run: 7z a -r -tzip mosaic-streamlit-windows-setup.zip "mosaic-streamlit\out\make\squirrel.windows\x64\mosaic-streamlit-0.0.1 Setup.exe"
+        
+      - uses: actions/upload-artifact@v2
+        with:
+          name: mosaic-streamlit-windows-setup.zip
+          path: mosaic-streamlit-windows-setup.zip
 

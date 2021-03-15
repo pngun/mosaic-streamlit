@@ -12,6 +12,11 @@
     "lint": "echo \"No linting configured\""
   },
   "keywords": [],
+  "author": {
+    "name": "Aljosa Mohorovic",
+    "email": "mohorovic@missionbio.com"
+  },
+  "license": "MIT",
   "config": {
     "forge": {
       "packagerConfig": {},
