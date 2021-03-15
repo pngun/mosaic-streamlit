@@ -31,8 +31,9 @@ jobs:
         
       - uses: actions/upload-artifact@v2
         with:
-          name: mosaic-streamlit-windows.zip
-          path: mosaic-streamlit-windows.zip
+          name: mosaic-streamlit-windows-runtime.zip
+          path: mosaic-streamlit-windows-runtime.zip
+          if-no-files-found: error
 
   build-electron:
     name: Build Electron app
@@ -57,4 +58,4 @@ jobs:
         with:
           name: mosaic-streamlit-windows-setup.zip
           path: mosaic-streamlit-windows-setup.zip
-
+          if-no-files-found: error
