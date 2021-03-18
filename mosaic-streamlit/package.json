@@ -22,6 +22,12 @@
       "packagerConfig": {},
       "makers": [
         {
+          "name": "@electron-forge/maker-dmg",
+          "config": {
+            "format": "ULFO"
+          }
+        },
+        {
           "name": "@electron-forge/maker-squirrel",
           "config": {
             "name": "mosaic_streamlit"
@@ -45,6 +51,7 @@
     }
   },
   "dependencies": {
+    "@electron-forge/maker-dmg": "^6.0.0-beta.54",
     "electron-squirrel-startup": "^1.0.0"
   },
   "devDependencies": {

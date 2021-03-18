@@ -6,7 +6,7 @@ const childProcess = require('child_process')
 var stMosaic
 var serverRunning = false
 var newLineSent = false
-const serverRunningText = "You can now view your Streamlit app in your browser"
+const serverRunningText = "Network URL"
 
 const run_on_win = () => {
   console.log('run on win')
@@ -48,7 +48,9 @@ function createWindow () {
     console.log("\nindex on data:", data.toString().indexOf(serverRunningText))
     if(!serverRunning && data.toString().indexOf(serverRunningText)) {
       serverRunning = true
-      mainWindow.loadURL('http://localhost:10000/')
+      setTimeout(() => {
+        mainWindow.loadURL('http://localhost:10000/')
+      }, 3000);
     }
     if(!newLineSent) {
       stMosaic.stdin.write('\n')
