@@ -68,7 +68,7 @@ app.whenReady().then(() => {
 
 app.on('will-quit', function () {
   console.log('\nwill-quit\n\n', process.platform, stMosaic.pid)
-  if(process.platform == "macos") {
+  if(process.platform == "darwin") {
     process.kill(-stMosaic.pid)
   }
 })
