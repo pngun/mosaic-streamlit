@@ -8,7 +8,8 @@ var stMosaic
 const run_on_win = () => {
   console.log('run on win')
   const run_path = path.join(__dirname, "run", "run.exe")
-  const runtime = childProcess.spawn("powershell.exe", [run_path])
+//  const runtime = childProcess.spawn("powershell.exe", [run_path])
+  const runtime = childProcess.spawn(run_path, [], {shell: false})
   console.log('run on win pid', runtime.pid)
   return runtime
 }
@@ -66,10 +67,8 @@ app.whenReady().then(() => {
 })
 
 app.on('will-quit', function () {
-  console.log('\nwill-quit\n\n', stMosaic.pid)
-  try {
+  console.log('\nwill-quit\n\n', process.platform, stMosaic.pid)
+  if(process.platform == "macos") {
     process.kill(-stMosaic.pid)
-  } catch(ex) {
-    console.log('Error when trying to kill runtime', ex)
   }
 })
