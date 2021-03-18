@@ -4,11 +4,14 @@ const path = require('path')
 const childProcess = require('child_process')
 
 var stMosaic
+var serverRunning = false
+var newLineSent = false
+const serverRunningText = "You can now view your Streamlit app in your browser"
 
 const run_on_win = () => {
   console.log('run on win')
   const run_path = path.join(__dirname, "run", "run.exe")
-//  const runtime = childProcess.spawn("powershell.exe", [run_path])
+  //const runtime = childProcess.spawn("powershell.exe", [run_path])
   const runtime = childProcess.spawn(run_path, [], {shell: false})
   console.log('run on win pid', runtime.pid)
   return runtime
@@ -17,7 +20,7 @@ const run_on_win = () => {
 const run_on_mac = () => {
   console.log('run on mac')
   const runtime = childProcess.spawn(
-    process.env.SHELL,
+    "/bin/bash",
     ["-c", "run"],
     {cwd: path.join(__dirname, "run"), detached: true, env: {'LC_ALL': 'en_US.UTF-8'}}
   )
@@ -26,7 +29,6 @@ const run_on_mac = () => {
 }
 
 function createWindow () {
-  // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -42,9 +44,17 @@ function createWindow () {
   }
 
   stMosaic.stdout.on('data', (data) => {
-    console.log(data.toString())
-    stMosaic.stdin.write('\n')
-    console.log('sent newline')
+    console.log("on data:", data.toString())
+    console.log("\nindex on data:", data.toString().indexOf(serverRunningText))
+    if(!serverRunning && data.toString().indexOf(serverRunningText)) {
+      serverRunning = true
+      mainWindow.loadURL('http://localhost:10000/')
+    }
+    if(!newLineSent) {
+      stMosaic.stdin.write('\n')
+      console.log('sent newline')
+      newLineSent = true
+    }
   })
   
   stMosaic.stderr.on('data', (data) => {
@@ -55,7 +65,7 @@ function createWindow () {
     console.log(`Child exited with code ${code}`)
   })
 
-  mainWindow.loadURL('http://localhost:10000/')
+  mainWindow.loadFile('loading.html')
 }
 
 app.whenReady().then(() => {
@@ -67,7 +77,7 @@ app.whenReady().then(() => {
 })
 
 app.on('will-quit', function () {
-  console.log('\nwill-quit\n\n', process.platform, stMosaic.pid)
+  console.log('app will-quit:', process.platform, stMosaic.pid)
   if(process.platform == "darwin") {
     process.kill(-stMosaic.pid)
   }
