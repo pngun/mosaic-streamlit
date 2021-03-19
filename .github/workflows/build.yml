@@ -37,15 +37,18 @@ jobs:
 
       - run: python --version
       - run: python -m venv venv
-      - run: |
+      - name: Check pip location
+        run: |
           ${{ env.VENV_ACTIVATE}}
           which pip
 
-      - run: |
+      - name: Install requirements
+        run: |
           ${{ env.VENV_ACTIVATE}}
           pip install -r ${{ env.RUNNER_OS_SHORT }}-requirements.txt
 
-      - run: |
+      - name: Build PyInstaller/Streamlit runtime
+        run: |
           ${{ env.VENV_ACTIVATE}}
           cd build && ./${{ env.BUILD_SCRIPT }}
 
@@ -108,16 +111,28 @@ jobs:
       - run: ls -R mosaic-streamlit/out
         
       - run: 7z a -r -tzip mosaic-streamlit-${{ env.RUNNER_OS_SHORT }}-setup.zip mosaic-streamlit/out/make
+        if: ${{ env.FULL_OUTPUT }}
 
       - uses: actions/upload-artifact@v2
         with:
           name: mosaic-streamlit-${{ env.RUNNER_OS_SHORT }}-setup
           path: mosaic-streamlit-${{ env.RUNNER_OS_SHORT }}-setup.zip
           if-no-files-found: error
+        if: ${{ env.FULL_OUTPUT }}
 
       - run: 7z a -r -tzip mosaic-streamlit-${{ env.RUNNER_OS_SHORT }}-out.zip mosaic-streamlit/out
+        if: ${{ env.FULL_OUTPUT }}
+
       - uses: actions/upload-artifact@v2
         with:
           name: mosaic-streamlit-${{ env.RUNNER_OS_SHORT }}-out
           path: mosaic-streamlit-${{ env.RUNNER_OS_SHORT }}-out.zip
           if-no-files-found: error
+        if: ${{ env.FULL_OUTPUT }}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: mosaic-streamlit-0.0.1-dmg
+          path: mosaic-streamlit/out/make/mosaic-streamlit-0.0.1.dmg
+          if-no-files-found: error
+        if: ${{ runner.os == 'macOS' }}
