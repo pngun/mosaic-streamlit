@@ -41,17 +41,17 @@ def render():
 
         link = st.text_input('Load from s3', value='')
 
-        if not os.path.exists(DFT.ROOT / 'h5'):
-            os.mkdir(DFT.ROOT / 'h5')
+        if not os.path.exists(DFT.H5_HOME / 'h5'):
+            os.mkdir(DFT.H5_HOME / 'h5')
 
-        if not os.path.exists(DFT.ROOT / 'h5/downloads'):
-            os.mkdir(DFT.ROOT / 'h5/downloads/')
+        if not os.path.exists(DFT.H5_HOME / 'h5/downloads'):
+            os.mkdir(DFT.H5_HOME / 'h5/downloads/')
 
-        if not os.path.exists(DFT.ROOT / 'h5/analyzed'):
-            os.mkdir(DFT.ROOT / 'h5/analyzed/')
+        if not os.path.exists(DFT.H5_HOME / 'h5/analyzed'):
+            os.mkdir(DFT.H5_HOME / 'h5/analyzed/')
 
-        downloaded_files = np.array(os.listdir(DFT.ROOT / 'h5/downloads/'))
-        analyzed_files = np.array(os.listdir(DFT.ROOT / 'h5/analyzed/'))
+        downloaded_files = np.array(os.listdir(DFT.H5_HOME / 'h5/downloads/'))
+        analyzed_files = np.array(os.listdir(DFT.H5_HOME / 'h5/analyzed/'))
         filenames = list(analyzed_files[analyzed_files.argsort()]) + list(downloaded_files[downloaded_files.argsort()])
         filenames = [None] + [f for f in filenames if f[-3:] == '.h5']
 
@@ -71,9 +71,9 @@ def render():
             file = link
         elif file is not None:
             if file in downloaded_files:
-                file = DFT.ROOT / f'h5/downloads/{file}'
+                file = DFT.H5_HOME / f'h5/downloads/{file}'
             else:
-                file = DFT.ROOT / f'h5/analyzed/{file}'
+                file = DFT.H5_HOME / f'h5/analyzed/{file}'
             kind = DFT.LOCAL
 
         typed_name = st.text_input('Save, download or delete the given file', value='')
@@ -83,9 +83,9 @@ def render():
                 typed_name = typed_name[:-3]
 
             if typed_name + '.h5' in analyzed_files:
-                typed_name = DFT.ROOT / f'h5/analyzed/{typed_name}.h5'
+                typed_name = DFT.H5_HOME / f'h5/analyzed/{typed_name}.h5'
             elif typed_name + '.h5' in downloaded_files:
-                typed_name = DFT.ROOT / f'h5/downloads/{typed_name}.h5'
+                typed_name = DFT.H5_HOME / f'h5/downloads/{typed_name}.h5'
             else:
                 interface.error(f'Cannot find "{typed_name}" in the available files')
 
@@ -121,7 +121,7 @@ def download(link):
     link = link.split('/')
     bucket, file = link[0], '/'.join(link[1:])
     filename = file.split('/')[-1]
-    filename = DFT.ROOT / f'h5/downloads/{filename}'
+    filename = DFT.H5_HOME / f'h5/downloads/{filename}'
     filename = str(filename)
     try:
         s3.download_file(bucket, file, filename)

@@ -53,6 +53,9 @@ def sample_hash(s):
 MOHASH_COMPLETE = {moprotein: assay_hash, modna: assay_hash, mosample: sample_hash}
 
 ROOT = pathlib.Path(__file__).parent
+H5_HOME = pathlib.Path.home() / "mosaic-streamlit-h5"
+if not H5_HOME.is_dir():
+    H5_HOME.mkdir()
 
 STREAMLIT_STATIC_PATH = pathlib.Path(st.__path__[0]) / 'static'
 # We create a downloads directory within the streamlit static asset directory
