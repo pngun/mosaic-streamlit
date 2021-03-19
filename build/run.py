@@ -4,8 +4,14 @@ from io import BytesIO
 from zipfile import ZipFile
 from urllib.request import urlopen
 
+
+class UIRunningException(Exception):
+    pass
+
+
 if __name__ == '__main__':
 
+    GUI_FRONTEND_RUNNING = os.getenv('MOSAIC_STREAMLIT_GUI_RUNNING', 'false') == 'true'
     launchdir = os.path.dirname(sys.argv[0])
 
     if launchdir == '':
@@ -15,6 +21,9 @@ if __name__ == '__main__':
 
     # Download latest code
     try:
+        if GUI_FRONTEND_RUNNING:
+            raise UIRunningException
+
         while True:
             val = input("\nCheck for updates?\n(This is in active development. Features that previously worked may no longer work. This is for research purposes only.)\nyes/[no] -  ")
             if val not in ['yes', 'no', '']:
@@ -40,6 +49,10 @@ if __name__ == '__main__':
             print('Succesfully downloaded all files')
         else:
             print('Skipping updates')
+
+    except UIRunningException:
+        print('UI running, skipping update check.')
+
     except Exception as e:
         print(f'FAILED to download code. Running local version.\n{e}')
 
@@ -47,4 +60,7 @@ if __name__ == '__main__':
     from streamlit import cli as stcli
 
     sys.argv = ["streamlit", "run", f"{launchdir}/app.py", "--global.developmentMode=false"]
+    if GUI_FRONTEND_RUNNING:
+        sys.argv += ["--server.port=10000", "--server.headless=true"]
+
     sys.exit(stcli.main())
