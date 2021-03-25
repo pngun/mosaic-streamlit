@@ -109,7 +109,7 @@ def render():
     return file, load_raw, apply_filter, kind, should_save, typed_name, info
 
 
-# @st.cache(max_entries=1, show_spinner=False)
+@st.cache(max_entries=1, show_spinner=False)
 def download(link):
     interface.status('Downloading from s3.')
 
@@ -129,7 +129,7 @@ def download(link):
     return filename
 
 
-# @st.cache(max_entries=1, show_spinner=False, allow_output_mutation=True)
+@st.cache(max_entries=1, show_spinner=False, allow_output_mutation=True)
 def load(path, load_raw, apply_filter):
     interface.status('Reading h5 file.')
 

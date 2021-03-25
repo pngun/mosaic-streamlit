@@ -288,7 +288,7 @@ def visual(sample, assay, kind, plot_columns, kwargs):
                 st.pyplot(plt.gcf())
 
 
-# @st.cache(max_entries=50, hash_funcs=DFT.MOHASH_COMPLETE, show_spinner=False, allow_output_mutation=True, ttl=3600)
+@st.cache(max_entries=50, hash_funcs=DFT.MOHASH_COMPLETE, show_spinner=False, allow_output_mutation=True, ttl=3600)
 def draw_plots(sample, assay, kind, kwargs):
     if kind in [DFT.HEATMAP, DFT.SCATTERPLOT, DFT.FEATURE_SCATTER, DFT.VIOLINPLOT, DFT.RIDGEPLOT, DFT.STRIPPLOT]:
         plot_funcs = {
@@ -405,7 +405,7 @@ def draw_plots(sample, assay, kind, kwargs):
     return fig
 
 
-# @st.cache(show_spinner=False)
+@st.cache(show_spinner=False)
 def get_annotations(variants):
     interface.status('Fetching DNA annotations')
     renamed_variants = np.array([var.replace(':', '-').replace('/', '-') for var in variants], dtype='str')

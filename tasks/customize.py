@@ -48,7 +48,7 @@ def render(assay):
     return lab_map, pal, keep_labs
 
 
-# @st.cache(max_entries=1, hash_funcs=DFT.MOHASH, show_spinner=False)
+@st.cache(max_entries=1, hash_funcs=DFT.MOHASH, show_spinner=False)
 def customize_labels(assay, lab_map, pal):
     old_labs = set(assay.get_labels())
     old_pal = assay.get_palette()
@@ -60,7 +60,7 @@ def customize_labels(assay, lab_map, pal):
         interface.rerun()
 
 
-# @st.cache(max_entries=1, hash_funcs=DFT.MOHASH_COMPLETE, show_spinner=False, allow_output_mutation=True)
+@st.cache(max_entries=1, hash_funcs=DFT.MOHASH_COMPLETE, show_spinner=False, allow_output_mutation=True)
 def filter_sample(sample, assay, keep_labs):
     assay_kept = assay[assay.barcodes(keep_labs), :]
     sample_kept = sample[assay.barcodes(keep_labs)]
