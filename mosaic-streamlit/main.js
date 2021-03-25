@@ -21,7 +21,7 @@ const run_on_mac = () => {
   console.log('run on mac')
   const runtime = childProcess.spawn(
     "/bin/bash",
-    ["-c", "run"],
+    ["-c", "./run"],
     {cwd: path.join(__dirname, "run"), detached: true, env: {'LC_ALL': 'en_US.UTF-8'}}
   )
   console.log('run on mac pid', runtime.pid)
@@ -80,7 +80,7 @@ app.whenReady().then(() => {
 
 app.on('will-quit', function () {
   console.log('app will-quit:', process.platform, stMosaic.pid)
-  if(process.platform == "darwin") {
+  if(process.platform != "win32") {
     process.kill(-stMosaic.pid)
   }
 })
