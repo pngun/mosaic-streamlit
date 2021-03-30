@@ -7,7 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest]
+        os: [macos-latest, windows-latest]
         python: ['3.8.8']
 
     steps:
@@ -28,11 +28,11 @@ jobs:
           node-version: '14'
 
       - name: Build release(s)
-        uses: MissionBio/actions@v0.1.0
+        #uses: MissionBio/actions@main
+        uses: aljosa/missionbio-actions@windows-build-support
         with:
           source_path: .
           build_path: build
-          build_script: ./build.sh
           electron_path: mosaic-streamlit
 
       - uses: actions/upload-artifact@v2
