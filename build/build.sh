@@ -9,8 +9,7 @@ pyinstaller --additional-hooks-dir=hooks \
   --hidden-import _plotly_utils \
   --clean -w run.py
 
-cp ../*.py ./dist/run/
-cp -r ../tasks ./dist/run/
+rm -rf ./dist/run/
 cp ../*.py ./dist/run.app/Contents/Resources/
 cp -r ../tasks ./dist/run.app/Contents/Resources/
 cp ../*.py ./dist/run.app/Contents/MacOS/
