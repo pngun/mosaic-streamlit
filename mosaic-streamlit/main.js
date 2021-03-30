@@ -21,8 +21,8 @@ const run_on_mac = () => {
   console.log('run on mac')
   const runtime = childProcess.spawn(
     "/bin/bash",
-    ["-c", "./run"],
-    {cwd: path.join(__dirname, "run"), detached: true, env: {'LC_ALL': 'en_US.UTF-8'}}
+    ["-c", "./MacOS/run"],
+    {cwd: path.join(__dirname, "run.app", "Contents"), detached: true, env: {'LC_ALL': 'en_US.UTF-8'}}
   )
   console.log('run on mac pid', runtime.pid)
   return runtime

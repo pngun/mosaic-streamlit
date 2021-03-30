@@ -1,0 +1,49 @@
+on: [push]
+
+jobs:
+  build_releases:
+    name: Release builder
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest]
+        python: ['3.8.8']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+          architecture: 'x64'
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Build release(s)
+        uses: MissionBio/actions@main
+        with:
+          source_path: .
+          build_path: build
+          build_script: ./build.sh
+          electron_path: mosaic-streamlit
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.PRODUCT_OS_AND_VERSION }}-${{ matrix.os }}-${{ matrix.python }}-release.zip
+          path: ${{ github.workspace }}/release.zip
+          if-no-files-found: ignore
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.PRODUCT_OS_AND_VERSION }}-${{ matrix.os }}-${{ matrix.python }}-release.dmg
+          path: ${{ github.workspace }}/release.dmg
+          if-no-files-found: ignore
+

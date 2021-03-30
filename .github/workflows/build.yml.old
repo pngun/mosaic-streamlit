@@ -11,6 +11,9 @@ jobs:
         os: [macos-latest] # windows-latest disabled
 
     steps:
+      - run: exit 127
+        shell: bash
+
       - run: |
           echo "RUNNER_OS_SHORT=windows" >> $env:GITHUB_ENV
           echo "BUILD_SCRIPT=build.ps1" >> $env:GITHUB_ENV

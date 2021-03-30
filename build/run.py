@@ -1,8 +1,5 @@
 import os
 import sys
-from io import BytesIO
-from zipfile import ZipFile
-from urllib.request import urlopen
 
 
 class UIRunningException(Exception):
@@ -61,6 +58,6 @@ if __name__ == '__main__':
 
     sys.argv = ["streamlit", "run", f"{launchdir}/app.py", "--global.developmentMode=false"]
     if GUI_FRONTEND_RUNNING:
-        sys.argv += ["--server.port=10000", "--server.headless=true"]
+        sys.argv += ["--server.port=10000", "--server.headless=true", "--server.fileWatcherType=none"]
 
     sys.exit(stcli.main())
