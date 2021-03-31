@@ -28,8 +28,7 @@ jobs:
           node-version: '14'
 
       - name: Build release(s)
-        #uses: MissionBio/actions@main
-        uses: aljosa/missionbio-actions@windows-build-support
+        uses: MissionBio/actions@v0.1.1
         with:
           source_path: .
           build_path: build
