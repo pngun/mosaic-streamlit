@@ -1,4 +1,12 @@
-# Build for Windows
+# Build for macOS and Windows
+
+## Bash shell
+
+You need a `bash shell` to run the setup and the build script.
+
+Note:
+Github Actions use the bash shell included with Git for Windows.
+It is used to build the releases.
 
 ## Setup environment
 
@@ -7,32 +15,20 @@ $ python --version
 Python 3.8.8
 
 $ python -m venv venv
-```
 
-### On Windows: 
-
-```
-$ .\venv\Scripts\Activate.ps1
-
-# make sure it's in the new virtualenv folder
-$ Get-Command python 
-$ Get-Command pip # make sure it's in the new virtualenv folder
+$ source ./venv/Scripts/activate # On Windows: 
+$ source ./venv/bin/activate # On macOS: 
 
 $ python -m pip install -U pip wheel
 $ pip install -r windows-requirements.txt
-```
-
-### On macOS: 
-
-```
-$ source ./venv/bin/activate
 
 # make sure it's in the new virtualenv folder
 $ which python
 $ which pip 
 
 $ python -m pip install -U pip wheel
-$ pip install -r macos-requirements.txt
+$ pip install -r windows-requirements.txt # On Windows
+$ pip install -r macos-requirements.txt # On macOS
 ```
 
 ## Check that streamlit is working
@@ -46,8 +42,11 @@ and select H5 file to check that it's working as expected.
 
 ## Build a distribution
 
+You need a bash shell to run the build script.
+Note: Github Actions use the bash shell included with Git for Windows.
+
 ```shell
 $ cd build
-$ ./build.ps1 # on Windows
-$ ./build.sh # on macOS
+$ ./build-windows.sh # on Windows
+$ ./build-macos.sh # on macOS
 ```
