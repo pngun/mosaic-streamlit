@@ -14,13 +14,13 @@ def run(sample, name):
         name = name[:-3]
 
     try:
-        os.remove(DFT.ROOT / f'h5/analyzed/{name}.h5')
+        os.remove(DFT.H5_FOLDER / f'analyzed/{name}.h5')
     except FileNotFoundError:
         pass
 
     samp = sample[:]
     set_defaults(samp)
-    mio.save(samp, DFT.ROOT / f'h5/analyzed/{name}.h5')
+    mio.save(samp, DFT.H5_FOLDER / f'analyzed/{name}.h5')
 
     interface.status('Saved.')
     interface.rerun()

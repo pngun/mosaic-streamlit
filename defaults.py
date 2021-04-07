@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import pathlib
 
@@ -23,6 +24,7 @@ from missionbio.mosaic.protein import Protein as moprotein
 from missionbio.mosaic.sample import Sample as mosample
 
 
+GUI_FRONTEND_RUNNING = os.getenv('MOSAIC_STREAMLIT_GUI_RUNNING', 'false') == 'true'
 MOHASH = {moprotein: lambda a: a.name + a.title + str(a.shape),
           modna: lambda a: a.name + a.title + str(a.shape),
           mosample: lambda s: s.name + str(s.dna.shape) + s.load_time}
@@ -53,6 +55,11 @@ def sample_hash(s):
 MOHASH_COMPLETE = {moprotein: assay_hash, modna: assay_hash, mosample: sample_hash}
 
 ROOT = pathlib.Path(__file__).parent
+H5_FOLDER = ROOT / 'h5'
+if GUI_FRONTEND_RUNNING:
+    H5_FOLDER = pathlib.Path.home() / "mosaic-streamlit-h5"
+if not H5_FOLDER.is_dir():
+    H5_FOLDER.mkdir()
 
 STREAMLIT_STATIC_PATH = pathlib.Path(st.__path__[0]) / 'static'
 # We create a downloads directory within the streamlit static asset directory
