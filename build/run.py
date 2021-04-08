@@ -1,5 +1,8 @@
 import os
 import sys
+from io import BytesIO
+from zipfile import ZipFile
+from urllib.request import urlopen
 
 
 class UIRunningException(Exception):
