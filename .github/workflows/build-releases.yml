@@ -7,7 +7,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, windows-latest]
+        #os: [macos-latest, windows-latest]
+        os: [macos-latest]
         python: ['3.8.8']
 
     steps:
@@ -33,6 +34,8 @@ jobs:
           source_path: .
           build_path: build
           electron_path: mosaic-streamlit
+        env:
+          MOSAIC_STREAMLIT_GUI_RUNNING: true
 
       - uses: actions/upload-artifact@v2
         with:

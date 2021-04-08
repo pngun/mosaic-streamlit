@@ -12,7 +12,14 @@ const run_on_win = () => {
   console.log('run on win')
   const run_path = path.join(__dirname, "run", "run.exe")
   //const runtime = childProcess.spawn("powershell.exe", [run_path])
-  const runtime = childProcess.spawn(run_path, [], {shell: false})
+  const runtime = childProcess.spawn(
+    run_path,
+    [],
+    {
+      shell: false,
+      env: { MOSAIC_STREAMLIT_GUI_RUNNING: 'true' }
+    }
+  )
   console.log('run on win pid', runtime.pid)
   return runtime
 }
@@ -22,7 +29,14 @@ const run_on_mac = () => {
   const runtime = childProcess.spawn(
     "/bin/bash",
     ["-c", "./MacOS/run"],
-    {cwd: path.join(__dirname, "run.app", "Contents"), detached: true, env: {'LC_ALL': 'en_US.UTF-8'}}
+    {
+      cwd: path.join(__dirname, "run.app", "Contents"),
+      detached: true,
+      env: {
+        LC_ALL: 'en_US.UTF-8',
+        MOSAIC_STREAMLIT_GUI_RUNNING: 'true'
+      }
+    }
   )
   console.log('run on mac pid', runtime.pid)
   return runtime
