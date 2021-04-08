@@ -1,0 +1,29 @@
+on: [push]
+
+jobs:
+  python_flake8:
+    name: Run flake8
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python: ['3.8.8']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+          architecture: 'x64'
+
+      - name: Run flake8
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -U pip wheel flake8
+          pip install -r requirements.txt
+          flake8 --exclude venv,mosaic-streamlit --ignore=E501,W503,F541
