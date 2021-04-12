@@ -28,7 +28,7 @@ jobs:
           node-version: '14'
 
       - name: Build release(s)
-        uses: MissionBio/actions@v0.1.1
+        uses: MissionBio/actions@v0.1.2
         with:
           source_path: .
           build_path: build
@@ -41,7 +41,7 @@ jobs:
           name: mosaic-streamlit-${{ env.PRODUCT_OS_AND_VERSION }}.zip
           path: ${{ github.workspace }}/release.zip
           if-no-files-found: ignore
-        if: ${{ env.SYSTEM_NAME != 'macos' }}
+        if: ${{ env.SYSTEM_NAME == 'linux' }}
 
       - uses: actions/upload-artifact@v2
         with:
@@ -50,3 +50,9 @@ jobs:
           if-no-files-found: ignore
         if: ${{ env.SYSTEM_NAME == 'macos' }}
 
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.PRODUCT_OS_AND_VERSION }}-release.exe
+          path: ${{ github.workspace }}/release.exe
+          if-no-files-found: ignore
+        if: ${{ env.SYSTEM_NAME == 'windows' }}
