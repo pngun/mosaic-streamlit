@@ -1,9 +1,9 @@
 import streamlit as st
-import defaults as DFT
-import interface
-
 from missionbio.h5.constants import DNA_ASSAY, PROTEIN_ASSAY
 from missionbio.mosaic.constants import NORMALIZED_READS
+
+import defaults as DFT
+import interface
 
 
 def run(sample):
@@ -32,34 +32,45 @@ def run(sample):
             if a.name == assay_type:
                 current_assay = a
 
-    interface.subheader(f'Analysing {assay_type} | {current_assay.shape[0]} cells | {current_assay.shape[1]} ids | {len(set(current_assay.get_labels()))} clusters')
+    interface.subheader(
+        f"Analysing {assay_type} | {current_assay.shape[0]} cells | {current_assay.shape[1]} ids | {len(set(current_assay.get_labels()))} clusters"
+    )
 
     return current_assay, available_assays
 
 
 def render(sample, assay_names):
-    with st.sidebar.beta_expander('Preprocessing'):
+    with st.sidebar.beta_expander("Preprocessing"):
         info = st.empty()
 
-        assay_name = {
-            DNA_ASSAY: 'DNA',
-            PROTEIN_ASSAY: 'Protein'
-        }
-        assay_type = st.selectbox('Assay', assay_names, format_func=lambda x: assay_name[x])
+        assay_name = {DNA_ASSAY: "DNA", PROTEIN_ASSAY: "Protein"}
+        assay_type = st.selectbox("Assay", assay_names, format_func=lambda x: assay_name[x])
 
         if assay_type == DNA_ASSAY:
             dp, gq, af, std = sample.dna.metadata[DFT.PREPROCESS_ARGS]
-            dp = st.slider('Minimum read depth (DP)', min_value=0, max_value=100, value=int(dp))
-            gq = st.slider('Minimum genotype quality (GQ)', min_value=0, max_value=100, value=int(gq))
-            af = st.slider('Minimum allele frequency (VAF)', min_value=0, max_value=100, value=int(af))
-            std = st.slider('Minimum standard deviation of AF', min_value=0, max_value=100, value=int(std))
+            dp = st.slider("Minimum read depth (DP)", min_value=0, max_value=100, value=int(dp))
+            gq = st.slider(
+                "Minimum genotype quality (GQ)", min_value=0, max_value=100, value=int(gq)
+            )
+            af = st.slider(
+                "Minimum allele frequency (VAF)", min_value=0, max_value=100, value=int(af)
+            )
+            std = st.slider(
+                "Minimum standard deviation of AF", min_value=0, max_value=100, value=int(std)
+            )
             ids = sample.dna.metadata[DFT.ALL_IDS]
             ids = list(ids[ids.argsort()])
-            drop_vars = st.multiselect('Variants to discard', ids, default=sample.dna.metadata[DFT.DROP_IDS])
-            keep_vars = st.multiselect('Variants to keep', ids, default=sample.dna.metadata[DFT.KEEP_IDS])
+            drop_vars = st.multiselect(
+                "Variants to discard", ids, default=sample.dna.metadata[DFT.DROP_IDS]
+            )
+            keep_vars = st.multiselect(
+                "Variants to keep", ids, default=sample.dna.metadata[DFT.KEEP_IDS]
+            )
 
             if len(keep_vars) != 0 and len(drop_vars) != 0:
-                interface.error('Cannot keep and drop variants both. Choose only one of the options')
+                interface.error(
+                    "Cannot keep and drop variants both. Choose only one of the options"
+                )
 
             assay_args = [drop_vars, keep_vars, dp, gq, af, std]
             n_features = sample.dna.shape[1]
@@ -67,14 +78,16 @@ def render(sample, assay_names):
         elif assay_type == PROTEIN_ASSAY:
             ids = sample.protein.metadata[DFT.ALL_IDS]
             ids = list(ids[ids.argsort()])
-            drop_abs = st.multiselect('Antibodies to discard', ids, default=sample.protein.metadata[DFT.DROP_IDS])
+            drop_abs = st.multiselect(
+                "Antibodies to discard", ids, default=sample.protein.metadata[DFT.DROP_IDS]
+            )
 
             assay_args = [drop_abs]
             n_features = sample.protein.shape[1]
 
-        interface.info(f'{assay_type} currently loaded with {n_features} features available', info)
+        interface.info(f"{assay_type} currently loaded with {n_features} features available", info)
 
-        clicked = st.button('Process')
+        clicked = st.button("Process")
 
     return assay_type, clicked, assay_args
 
@@ -90,14 +103,16 @@ def first_pass_preprocess(sample, assay_args):
 
 @st.cache(max_entries=1, hash_funcs=DFT.MOHASH, show_spinner=False)
 def preprocess_dna(sample, clicked, drop_vars, keep_vars, dp, gq, af, std):
-    args_changed = (list(sample.dna.metadata[DFT.PREPROCESS_ARGS]) != [dp, gq, af, std]
-                    or set(sample.dna.metadata[DFT.DROP_IDS]) != set(drop_vars)
-                    or set(sample.dna.metadata[DFT.KEEP_IDS]) != set(keep_vars))
+    args_changed = (
+        list(sample.dna.metadata[DFT.PREPROCESS_ARGS]) != [dp, gq, af, std]
+        or set(sample.dna.metadata[DFT.DROP_IDS]) != set(drop_vars)
+        or set(sample.dna.metadata[DFT.KEEP_IDS]) != set(keep_vars)
+    )
 
     if sample.dna.metadata[DFT.INITIALIZE] or (args_changed and clicked):
-        interface.status('Processing DNA assay.')
+        interface.status("Processing DNA assay.")
 
-        sample.reset('dna')
+        sample.reset("dna")
 
         if len(keep_vars) == 0:
             dna_vars = sample.dna.filter_variants(min_dp=dp, min_gq=gq, min_vaf=af, min_std=std)
@@ -108,8 +123,10 @@ def preprocess_dna(sample, clicked, drop_vars, keep_vars, dp, gq, af, std):
             dna_vars = keep_vars
 
         if len(dna_vars) == 0:
-            interface.status('Done.')
-            interface.error('No variants found. Adjust the filters and process again. Make sure "Filter" is deselected in the Files section.')
+            interface.status("Done.")
+            interface.error(
+                'No variants found. Adjust the filters and process again. Make sure "Filter" is deselected in the Files section.'
+            )
 
         sample.dna = sample.dna[:, dna_vars]
         sample.dna.add_metadata(DFT.PREPROCESS_ARGS, [dp, gq, af, std])
@@ -123,10 +140,12 @@ def preprocess_dna(sample, clicked, drop_vars, keep_vars, dp, gq, af, std):
 
 @st.cache(max_entries=1, hash_funcs=DFT.MOHASH, show_spinner=False)
 def preprocess_protein(sample, clicked, drop_abs):
-    if sample.protein.metadata[DFT.INITIALIZE] or (set(sample.protein.metadata[DFT.DROP_IDS]) != set(drop_abs) and clicked):
-        interface.status('Processing protein assay.')
+    if sample.protein.metadata[DFT.INITIALIZE] or (
+        set(sample.protein.metadata[DFT.DROP_IDS]) != set(drop_abs) and clicked
+    ):
+        interface.status("Processing protein assay.")
 
-        sample.reset('protein')
+        sample.reset("protein")
 
         sample.protein.add_metadata(DFT.ALL_IDS, sample.protein.ids())
         protein = sample.protein.drop(drop_abs) if len(drop_abs) > 0 else sample.protein[:, :]

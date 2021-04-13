@@ -1,3 +1,3 @@
 from PyInstaller.utils.hooks import collect_all
 
-datas, binaries, hiddenimports = collect_all('missionbio.mosaic')
+datas, binaries, hiddenimports = collect_all("missionbio.mosaic")

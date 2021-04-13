@@ -1,6 +1,4 @@
-
-
-class Task():
+class Task:
     def __init__(self, render_kwargs, compute_kwargs, next_task):
         self.kwargs = render_kwargs
 

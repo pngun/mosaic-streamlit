@@ -1,14 +1,13 @@
-import boto3
-import numpy as np
 import os
-
-import streamlit as st
-import defaults as DFT
-import interface
-
 import time
 
+import boto3
 import missionbio.mosaic.io as mio
+import numpy as np
+import streamlit as st
+
+import defaults as DFT
+import interface
 
 
 def run():
@@ -17,72 +16,76 @@ def run():
         file = download(file)
 
     if file is None:
-        interface.error('Please use the options available in the sidebar to load a sample.<br>'
-                        'New h5 files should be copied to the <i>/h5/downloads/</i> folder where the app is stored.')
+        interface.error(
+            "Please use the options available in the sidebar to load a sample.<br>"
+            "New h5 files should be copied to the <i>/h5/downloads/</i> folder where the app is stored."
+        )
 
     sample = load(file, load_raw, apply_filter)
-    interface.info(f'Currently loaded {sample.name}', info)
+    interface.info(f"Currently loaded {sample.name}", info)
 
     return sample, should_save, save_name
 
 
 def render():
-    with st.sidebar.beta_expander('Files', expanded=True):
-        interface.info('Load or download a file from s3')
+    with st.sidebar.beta_expander("Files", expanded=True):
+        interface.info("Load or download a file from s3")
         info = st.empty()
 
         col1, col2 = st.beta_columns([0.3, 1])
         with col1:
             st.markdown(f"<sup><p style='margin-bottom:22px'></p></sup>", unsafe_allow_html=True)
-            load_raw = st.checkbox('Raw')
+            load_raw = st.checkbox("Raw")
         with col2:
             st.markdown(f"<sup><p style='margin-bottom:22px'></p></sup>", unsafe_allow_html=True)
-            apply_filter = st.checkbox('Filter', False)
+            apply_filter = st.checkbox("Filter", False)
 
-        link = st.text_input('Load from s3', value='')
+        link = st.text_input("Load from s3", value="")
 
-        if not os.path.exists(DFT.H5_FOLDER / 'downloads'):
-            os.mkdir(DFT.H5_FOLDER / 'downloads/')
+        if not os.path.exists(DFT.H5_FOLDER / "downloads"):
+            os.mkdir(DFT.H5_FOLDER / "downloads/")
 
-        if not os.path.exists(DFT.H5_FOLDER / 'analyzed'):
-            os.mkdir(DFT.H5_FOLDER / 'analyzed/')
+        if not os.path.exists(DFT.H5_FOLDER / "analyzed"):
+            os.mkdir(DFT.H5_FOLDER / "analyzed/")
 
-        downloaded_files = np.array(os.listdir(DFT.H5_FOLDER / 'downloads/'))
-        analyzed_files = np.array(os.listdir(DFT.H5_FOLDER / 'analyzed/'))
-        filenames = list(analyzed_files[analyzed_files.argsort()]) + list(downloaded_files[downloaded_files.argsort()])
-        filenames = [None] + [f for f in filenames if f[-3:] == '.h5']
+        downloaded_files = np.array(os.listdir(DFT.H5_FOLDER / "downloads/"))
+        analyzed_files = np.array(os.listdir(DFT.H5_FOLDER / "analyzed/"))
+        filenames = list(analyzed_files[analyzed_files.argsort()]) + list(
+            downloaded_files[downloaded_files.argsort()]
+        )
+        filenames = [None] + [f for f in filenames if f[-3:] == ".h5"]
 
         def shownames(name):
             nonlocal analyzed_files
             if name in analyzed_files:
-                return '* ' + name
+                return "* " + name
             else:
                 return name
 
         kind = None
         selector = st.empty()
-        file = selector.selectbox('Load existing file', filenames, format_func=shownames)
+        file = selector.selectbox("Load existing file", filenames, format_func=shownames)
 
-        if link != '':
+        if link != "":
             kind = DFT.S3
             file = link
         elif file is not None:
             if file in downloaded_files:
-                file = DFT.H5_FOLDER / f'downloads/{file}'
+                file = DFT.H5_FOLDER / f"downloads/{file}"
             else:
-                file = DFT.H5_FOLDER / f'analyzed/{file}'
+                file = DFT.H5_FOLDER / f"analyzed/{file}"
             kind = DFT.LOCAL
 
-        typed_name = st.text_input('Save, download or delete the given file', value='')
+        typed_name = st.text_input("Save, download or delete the given file", value="")
 
         def _get_file_from_name(typed_name):
-            if typed_name[-3:] == '.h5':
+            if typed_name[-3:] == ".h5":
                 typed_name = typed_name[:-3]
 
-            if typed_name + '.h5' in analyzed_files:
-                typed_name = DFT.H5_FOLDER / f'analyzed/{typed_name}.h5'
-            elif typed_name + '.h5' in downloaded_files:
-                typed_name = DFT.H5_FOLDER / f'downloads/{typed_name}.h5'
+            if typed_name + ".h5" in analyzed_files:
+                typed_name = DFT.H5_FOLDER / f"analyzed/{typed_name}.h5"
+            elif typed_name + ".h5" in downloaded_files:
+                typed_name = DFT.H5_FOLDER / f"downloads/{typed_name}.h5"
             else:
                 interface.error(f'Cannot find "{typed_name}" in the available files')
 
@@ -90,19 +93,19 @@ def render():
 
         col1, col2, col3 = st.beta_columns([0.25, 0.4, 0.4])
         with col1:
-            st.markdown('')
-            should_save = st.button('Save')
+            st.markdown("")
+            should_save = st.button("Save")
         with col2:
-            st.markdown('')
-            if st.button('Download'):
+            st.markdown("")
+            if st.button("Download"):
                 download_path = _get_file_from_name(typed_name)
                 interface.download(download_path)
         with col3:
-            st.markdown('')
-            if st.button('Delete'):
+            st.markdown("")
+            if st.button("Delete"):
                 typed_name = _get_file_from_name(typed_name)
                 if file is not None and typed_name == file:
-                    interface.error('Cannot delete the file used in the current analysis.')
+                    interface.error("Cannot delete the file used in the current analysis.")
                 os.remove(typed_name)
                 interface.rerun()
 
@@ -111,40 +114,40 @@ def render():
 
 @st.cache(max_entries=1, show_spinner=False)
 def download(link):
-    interface.status('Downloading from s3.')
+    interface.status("Downloading from s3.")
 
-    s3 = boto3.client('s3')
-    link = link.replace('s3://', '')
-    link = link.split('/')
-    bucket, file = link[0], '/'.join(link[1:])
-    filename = file.split('/')[-1]
-    filename = DFT.H5_FOLDER / f'downloads/{filename}'
+    s3 = boto3.client("s3")
+    link = link.replace("s3://", "")
+    link = link.split("/")
+    bucket, file = link[0], "/".join(link[1:])
+    filename = file.split("/")[-1]
+    filename = DFT.H5_FOLDER / f"downloads/{filename}"
     filename = str(filename)
     try:
         s3.download_file(bucket, file, filename)
     except Exception as e:
-        interface.status('Done.')
-        interface.error(f'Could not find the given h5 file. {e}')
+        interface.status("Done.")
+        interface.error(f"Could not find the given h5 file. {e}")
 
     return filename
 
 
 @st.cache(max_entries=1, show_spinner=False, allow_output_mutation=True)
 def load(path, load_raw, apply_filter):
-    interface.status('Reading h5 file.')
+    interface.status("Reading h5 file.")
 
     sample = mio.load(path, apply_filter=apply_filter, raw=load_raw)
     sample.load_time = str(time.time())
 
     if sample.protein is not None:
         try:
-            new_ids = np.array([ab.split(' ')[2] for ab in sample.protein.col_attrs['id']])
+            new_ids = np.array([ab.split(" ")[2] for ab in sample.protein.col_attrs["id"]])
         except IndexError:
             new_ids = sample.protein.ids()
 
-        sample.protein.add_col_attr('id', new_ids)
+        sample.protein.add_col_attr("id", new_ids)
         if sample.protein_raw is not None:
-            sample.protein_raw.add_col_attr('id', new_ids)
+            sample.protein_raw.add_col_attr("id", new_ids)
 
     init_defaults(sample)
 
