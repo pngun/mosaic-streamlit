@@ -1,8 +1,8 @@
 on: [push]
 
 jobs:
-  python_flake8:
-    name: Run flake8
+  python_pre_commit:
+    name: Run pre-commit
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -20,7 +20,7 @@ jobs:
           python-version: ${{ matrix.python }}
           architecture: 'x64'
 
-      - name: Run flake8
+      - name: Run pre-commit commands
         run: |
           python -m venv venv
           source venv/bin/activate
