@@ -1,20 +1,12 @@
 import streamlit as st
 
 import interface
-from tasks import (
-    load,
-    preprocess,
-    prepare,
-    cluster,
-    customize,
-    save,
-    visual
-)
+from tasks import cluster, customize, load, prepare, preprocess, save, visual
 
-st.set_page_config(page_title='Mosaic', layout='wide')
+st.set_page_config(page_title="Mosaic", layout="wide")
 interface.init()
-interface.subheader('GUI for Mosaic built using Streamlit')
-interface.status('v0.4.1')
+interface.subheader("GUI for Mosaic built using Streamlit")
+interface.status("v0.4.1")
 
 sample, should_save, save_name = load.run()
 

@@ -1,6 +1,8 @@
 import os
 import shutil
+
 import streamlit as st
+
 import defaults as DFT
 
 STATUS = None
@@ -23,7 +25,10 @@ def info(msg, component=st, color=DFT.BLUE):
 
 def error(msg):
     global ERROR
-    ERROR.markdown(f"<p style='font-size:18px'><span style='color:{DFT.RED}'><b>{msg}</b></span></p>", unsafe_allow_html=True)
+    ERROR.markdown(
+        f"<p style='font-size:18px'><span style='color:{DFT.RED}'><b>{msg}</b></span></p>",
+        unsafe_allow_html=True,
+    )
     st.stop()
 
 
@@ -33,11 +38,13 @@ def status(msg):
 
 
 def download(download_path):
-    name = download_path.split('/')[-1]
+    name = download_path.split("/")[-1]
     shutil.rmtree(DFT.DOWNLOADS_PATH)
     os.makedirs(DFT.DOWNLOADS_PATH)
     shutil.copy(download_path, DFT.DOWNLOADS_PATH / name)
-    DOWNLOAD.markdown(f'<b>[Click here to download {name}](downloads/{name})</b>', unsafe_allow_html=True)
+    DOWNLOAD.markdown(
+        f"<b>[Click here to download {name}](downloads/{name})</b>", unsafe_allow_html=True
+    )
 
 
 def init():
@@ -48,9 +55,8 @@ def init():
     SUBHEADER = st.empty()
     STATUS = st.empty()
 
-    hide_streamlit_style = ('<style>\n'
-                            '#MainMenu {visibility: hidden;}\n'
-                            'footer {visibility: hidden;}\n'
-                            '</style>')
+    hide_streamlit_style = (
+        "<style>\n" "#MainMenu {visibility: hidden;}\n" "footer {visibility: hidden;}\n" "</style>"
+    )
 
     st.markdown(hide_streamlit_style, unsafe_allow_html=True)
