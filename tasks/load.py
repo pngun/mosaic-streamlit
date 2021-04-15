@@ -32,14 +32,6 @@ def render():
         interface.info("Load or download a file from s3")
         info = st.empty()
 
-        col1, col2 = st.beta_columns([0.3, 1])
-        with col1:
-            st.markdown(f"<sup><p style='margin-bottom:22px'></p></sup>", unsafe_allow_html=True)
-            load_raw = st.checkbox("Raw")
-        with col2:
-            st.markdown(f"<sup><p style='margin-bottom:22px'></p></sup>", unsafe_allow_html=True)
-            apply_filter = st.checkbox("Filter", False)
-
         link = st.text_input("Load from s3", value="")
 
         if not os.path.exists(DFT.H5_FOLDER / "downloads"):
@@ -75,6 +67,14 @@ def render():
             else:
                 file = DFT.H5_FOLDER / f"analyzed/{file}"
             kind = DFT.LOCAL
+
+        col1, col2 = st.beta_columns([0.3, 1])
+        with col1:
+            st.markdown(f"<sup><p style='margin-bottom:22px'></p></sup>", unsafe_allow_html=True)
+            load_raw = st.checkbox("Raw")
+        with col2:
+            st.markdown(f"<sup><p style='margin-bottom:22px'></p></sup>", unsafe_allow_html=True)
+            apply_filter = st.checkbox("Filter", False)
 
         typed_name = st.text_input("Save, download or delete the given file", value="")
 

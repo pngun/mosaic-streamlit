@@ -148,7 +148,7 @@ LAYOUT = {
 
 VISUALS = {
     VISUAL_CATEGORY_1: [
-        [2, 1, 1.1, 1.45, 1, 1, 1, 5],
+        [2, 1, 1.1, 1.45, 1, 1, 1],
         [HEATMAP, SCATTERPLOT, FEATURE_SCATTER, VIOLINPLOT, RIDGEPLOT, STRIPPLOT],
     ],
     VISUAL_CATEGORY_2: [
