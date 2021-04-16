@@ -18,7 +18,7 @@ def run():
     if file is None:
         interface.error(
             "Please use the options available in the sidebar to load a sample.<br>"
-            "New h5 files should be copied to the <i>/h5/downloads/</i> folder where the app is stored."
+            f"New h5 files should be copied to the <i>{DFT.H5_FOLDER}/downloads/</i> folder."
         )
 
     sample = load(file, load_raw, apply_filter)
