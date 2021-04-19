@@ -123,7 +123,7 @@ def render(sample, assay, kind, args_conatiner):
             labels = list(set(assay.get_labels()))
 
             kwargs["sample_order"] = st.multiselect("Sample Order", samples)
-            kwargs["label_order"] = st.multiselect("Label Order", labels)
+            kwargs["label_order"] = st.multiselect("Label Order", sorted(labels))
             if len(kwargs["sample_order"]) == 0:
                 kwargs["sample_order"] = samples
             if len(kwargs["label_order"]) == 0:
