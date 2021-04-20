@@ -25,7 +25,7 @@ def render(assay):
 
         lab_set = np.unique(assay.get_labels())
         for lab in lab_set:
-            col1, col2, col3 = st.beta_columns([1, 0.1, 0.07])
+            col1, col2, col3 = st.beta_columns([1, 0.15, 0.1])
             with col1:
                 new_name = st.text_input(f"Give a new name to {lab}", lab)
             with col2:

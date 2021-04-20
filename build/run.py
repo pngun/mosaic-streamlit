@@ -67,7 +67,7 @@ if __name__ == "__main__":
             "--server.port=10000",
             "--server.headless=true",
             "--server.fileWatcherType=none",
-            "--theme.primaryColor=blue",
+            "--theme.primaryColor=#54B4D4",
             "--theme.backgroundColor=#fff",
             "--theme.secondaryBackgroundColor=#F0F2F6",
             "--theme.textColor=#262730",

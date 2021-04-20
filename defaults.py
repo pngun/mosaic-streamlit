@@ -131,7 +131,6 @@ STRIPPLOT = "Stripplot"
 VAR_ANNOTATIONS = "Annotations"
 SIGNATURES = "Signatures"
 COLORS = "Colors"
-METRICS = "Metrics"
 DOWNLOAD = "Download"
 
 FISHPLOT = "Fish plot"
@@ -140,7 +139,6 @@ BARPLOT = "Bar plot"
 DNA_PROTEIN_PLOT = "DNA vs Protein"
 DNA_PROTEIN_HEATMAP = "Sample Heatmap"
 READ_DEPTH = "Read Depth"
-ASSAY_SCATTER = "Assay Scatter"
 
 LAYOUT = {
     COLORS: [0.5] + [1] * 10,
@@ -148,17 +146,17 @@ LAYOUT = {
 
 VISUALS = {
     VISUAL_CATEGORY_1: [
-        [2, 1, 1.1, 1.45, 1, 1, 1],
+        [2.3, 1, 1.1, 1.45, 1, 1, 1],
         [HEATMAP, SCATTERPLOT, FEATURE_SCATTER, VIOLINPLOT, RIDGEPLOT, STRIPPLOT],
     ],
     VISUAL_CATEGORY_2: [
-        [2, 1, 1.15, 0.75, 0.75, 1, 6.8],
-        [SIGNATURES, VAR_ANNOTATIONS, COLORS, METRICS, DOWNLOAD],
+        [1.65, 1, 1.15, 0.75, 0.75, 1],
+        [SIGNATURES, VAR_ANNOTATIONS, COLORS, DOWNLOAD],
     ],
-    VISUAL_CATEGORY_3: [[1.8, 0.85, 1, 9], [FISHPLOT, BARPLOT]],
+    VISUAL_CATEGORY_3: [[2.43, 0.85, 1, 5], [FISHPLOT, BARPLOT]],
     VISUAL_CATEGORY_4: [
-        [1.8, 1.35, 1.25, 1, 1.5, 5],
-        [DNA_PROTEIN_HEATMAP, DNA_PROTEIN_PLOT, READ_DEPTH, ASSAY_SCATTER],
+        [1.8, 1.35, 1.25, 1, 1.5],
+        [DNA_PROTEIN_HEATMAP, DNA_PROTEIN_PLOT, READ_DEPTH],
     ],
 }
 
