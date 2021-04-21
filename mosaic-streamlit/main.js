@@ -1,11 +1,12 @@
-// Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const {app, Menu, MenuItem, BrowserWindow} = require('electron')
 
 if(require('electron-squirrel-startup')) app.quit()
 
 const path = require('path')
 const childProcess = require('child_process')
 
+var mainWindow
+var aboutWindow
 var stMosaic
 var serverRunning = false
 var newLineSent = false
@@ -45,8 +46,23 @@ const run_on_mac = () => {
   return runtime
 }
 
+const about = (parent) => {
+  aboutWindow = new BrowserWindow({
+    parent: parent,
+    modal: true,
+    show: false,
+    width: 400,
+    height: 400
+  })
+  aboutWindow.loadFile('release.html')
+  aboutWindow.removeMenu()
+  aboutWindow.once('ready-to-show', () => {
+    aboutWindow.show()
+  })
+}
+
 function createWindow () {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -88,6 +104,13 @@ function createWindow () {
 }
 
 app.whenReady().then(() => {
+  const template = [
+    { label: 'Quit', role: 'quit' },
+    { label: 'About', click: () => { about(mainWindow) } },
+  ]
+  menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
+
   createWindow()
   
   app.on('activate', function () {

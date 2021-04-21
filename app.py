@@ -1,12 +1,14 @@
 import streamlit as st
 
 import interface
+from defaults import GUI_FRONTEND_RUNNING
 from tasks import cluster, customize, load, prepare, preprocess, save, visual
 
 st.set_page_config(page_title="Mosaic", layout="wide")
 interface.init()
-interface.subheader("GUI for Mosaic built using Streamlit")
-interface.status("v0.4.1")
+if not GUI_FRONTEND_RUNNING:
+    interface.subheader("GUI for Mosaic built using Streamlit")
+    interface.status("v0.4.1")
 
 sample, should_save, save_name = load.run()
 
