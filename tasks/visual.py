@@ -38,7 +38,6 @@ def set_layout(assay):
 
     for i in range(len(options)):
         with columns[i + 1]:
-            st.markdown(f"<p style='margin-bottom:33px'></p>", unsafe_allow_html=True)
             clicked = st.button(options[i], key=f"visual-{options[i]}")
             if clicked:
                 kind = options[i]
@@ -143,6 +142,9 @@ def render(sample, assay, kind, args_conatiner):
                 kwargs["label_order"] = labels
             kwargs["percentage"] = st.checkbox("Percentage", False)
         elif kind == DFT.DNA_PROTEIN_PLOT:
+            if sample.protein is None:
+                interface.error("Protein assay required for the DNA vs Protein plot")
+
             kwargs["analyte"] = st.selectbox(
                 "Analyte", ["protein"], format_func=lambda a: analyte_map[a]
             )
@@ -152,25 +154,35 @@ def render(sample, assay, kind, args_conatiner):
             kwargs["protein_features"] = st.multiselect(
                 "Protein features", list(sample.protein.ids()), sample.protein.ids()[:4]
             )
+
+            if len(kwargs["dna_features"]) == 0:
+                kwargs["dna_features"] = sample.dna.ids()
+            if len(kwargs["protein_features"]) == 0:
+                kwargs["protein_features"] = sample.protein.ids()
+
         elif kind == DFT.DNA_PROTEIN_HEATMAP:
+            if sample.protein is None:
+                interface.error("Protein assay required for the multiomic heatmap")
+
             kwargs["clusterby"] = st.selectbox(
                 "Cluster by", ["dna", "protein"], format_func=lambda a: analyte_map[a]
             )
             kwargs["sortby"] = st.selectbox(
                 "Sort by", ["dna", "protein"], format_func=lambda a: analyte_map[a]
             )
-            kwargs["dna_features"] = st.multiselect(
-                "DNA features", list(sample.dna.ids()), sample.dna.ids()
-            )
+            kwargs["dna_features"] = st.multiselect("DNA features", list(sample.dna.ids()))
             kwargs["protein_features"] = st.multiselect(
-                "Protein features", list(sample.protein.ids()), sample.protein.ids()
+                "Protein features", list(sample.protein.ids())
             )
 
-        elif kind == DFT.METRICS:
-            st.header("")
-            interface.info(
-                "<b>Some values might be missing in case the raw<br> files are not loaded.</b> These metrics can be<br> pasted into the metrics sheet as is."
-            )
+            if len(kwargs["dna_features"]) == 0:
+                kwargs["dna_features"] = sample.dna.ids()
+            if len(kwargs["protein_features"]) == 0:
+                kwargs["protein_features"] = sample.protein.ids()
+
+            if len(kwargs["protein_features"]) < 2:
+                interface.error("At least two antibodies required for a multi sample heatmap.")
+
         elif kind == DFT.READ_DEPTH:
             if assay.name == PROTEIN_ASSAY:
                 kwargs["layer"] = st.selectbox("Layer", DFT.LAYERS[assay.name])
@@ -178,13 +190,10 @@ def render(sample, assay, kind, args_conatiner):
                 kwargs["features"] = st.multiselect(
                     "Features", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 4)]
                 )
-            else:
-                st.header("")
-                interface.info("<b>Only applicable for the protein assay</b>")
-        elif kind == DFT.ASSAY_SCATTER:
-            kwargs["draw"] = sample.protein_raw is not None
-            if not kwargs["draw"]:
-                interface.info("<b>Raw files needed for this plot.</b>")
+
+            if sample.protein is None or assay.name != PROTEIN_ASSAY:
+                interface.error("The read depth plot is available only for the protein assay.")
+
         elif kind == DFT.DOWNLOAD:
             kwargs["item"] = st.selectbox("Object to Download", DFT.DOWNLOAD_ITEMS)
             kwargs["download"] = st.button("Download", key="download_button")
@@ -228,10 +237,6 @@ def visual(sample, assay, kind, plot_columns, kwargs):
 
             st.write(kwargs["attribute"])
             st.dataframe(df, height=650)
-    elif kind == DFT.METRICS:
-        with plot_columns:
-            st.header("")
-            metrics(sample)
     elif kind == DFT.COLORS:
         colors = COLORS.copy()
         del colors[20]
@@ -323,14 +328,6 @@ def visual(sample, assay, kind, plot_columns, kwargs):
             if assay.name == PROTEIN_ASSAY:
                 fig = draw_plots(sample, assay, kind, kwargs)
                 st.plotly_chart(fig)
-    elif kind == DFT.ASSAY_SCATTER:
-        if kwargs["draw"]:
-            with plot_columns:
-                samp = sample[:]
-                samp.cnv_raw.normalize_barcodes()
-                samp.protein_raw.normalize_barcodes()
-                samp.assay_scatter()
-                st.pyplot(plt.gcf())
 
 
 @st.cache(
@@ -475,6 +472,8 @@ def draw_plots(sample, assay, kind, kwargs):
             height=max(500, max(300 * nrows, 30 * len(feats) * nrows)),
         )
 
+    fig.update_layout(plot_bgcolor="rgba(0,0,0,0)")
+
     return fig
 
 
@@ -507,147 +506,3 @@ def get_annotations(variants):
     df = df[["Variant"] + annot_types]
 
     return df
-
-
-def metrics(sample):
-    prot_metrics = sample.protein.metadata
-    dna_metrics = sample.dna.metadata
-
-    prot_total_reads = prot_metrics["n_read_pairs"]
-
-    st.text(f"name {sample.name}")
-    st.text(f"total-reads: {prot_total_reads}")
-    st.text(f"reads-after-cutadapt: {prot_metrics['n_read_pairs_trimmed']}")
-    st.text(f"%reads-trimmed: {prot_metrics['n_read_pairs_trimmed'] / prot_total_reads}")
-    st.text(f"reads-barcode-correction: {prot_metrics['n_read_pairs_valid_cell_barcodes']}")
-    st.text(
-        f"%reads-barcode: {prot_metrics[f'n_read_pairs_valid_cell_barcodes'] / prot_total_reads}"
-    )
-    st.text(f"reads-ab-correction: {prot_metrics['n_read_pairs_valid_ab_barcodes']}")
-    st.text(f"%reads-ab: {prot_metrics['n_read_pairs_valid_ab_barcodes'] / prot_total_reads}")
-
-    if sample.protein_raw is None:
-        prot_read_count = 0
-        read_per_bar = 0
-        num_candidate_prot_bars = 0
-        candidate_reads = 0
-        percentage_aggregates = 0
-    else:
-        prot_read_count = sample.protein_raw.layers["read_counts"]
-        read_per_bar = prot_read_count.sum(axis=1)
-        num_candidate_prot_bars = (read_per_bar > 10).sum()
-        candidate_reads = read_per_bar[read_per_bar > 10].sum()
-        percentage_aggregates = get_aggregates(sample.protein_raw)["per_total"].sum() / 100
-
-    cells_after_merge = len(sample.protein.row_attrs["barcode"])
-
-    if sample.cnv_raw is None:
-        dna_reads_to_cells = 0
-        uniformity = 0
-    else:
-        dna_reads_to_cells = (
-            sample.cnv_raw.layers["read_counts"][
-                sample.cnv_raw.row_attrs["cellfinder_pass"].astype(bool), :
-            ].sum()
-            / dna_metrics["n_read_pairs"]
-        )
-        cell_df = pd.DataFrame(
-            sample.cnv_raw.layers["read_counts"][
-                sample.cnv_raw.row_attrs["cellfinder_pass"].astype(bool), :
-            ]
-        )
-        uniformity = (
-            cell_df.mean()
-            .between(
-                left=(0.2 * cell_df.mean().mean()),
-                right=(5 * cell_df.mean().mean()),
-                inclusive=True,
-            )
-            .sum()
-            / cell_df.shape[1]
-        )
-
-    dna_reads_to_merged_cells = sample.cnv.layers["read_counts"].sum() / dna_metrics["n_read_pairs"]
-    prot_reads_to_cells = sample.protein.layers["read_counts"].sum() / candidate_reads
-    prot_reads_to_cells_total_reads = sample.protein.layers["read_counts"].sum() / prot_total_reads
-    prot_bar_per_cell = cells_after_merge / len(sample.dna.row_attrs["barcode"])
-
-    prot_cell_reads = pd.DataFrame(
-        sample.protein.layers["read_counts"], columns=sample.protein.ids()
-    )
-    avg_reads_per_ab_cell = prot_cell_reads.mean().mean()
-    med_reads_per_ab_cell = prot_cell_reads[prot_cell_reads > 1].median().median()
-    total_ab = (prot_cell_reads.mean(axis=0) > 0).sum()
-
-    iso_reads = sample.protein.layers["read_counts"][
-        :, np.where(np.isin(sample.protein.ids(), ["IgG1", "IgG2a", "IgG2b"]))[0]
-    ]
-    noise_reads = iso_reads.sum(axis=1)
-    signal_reads = sample.protein.layers["read_counts"].sum(axis=1)
-    nsb = 100 * noise_reads / signal_reads
-    nsb_ratio_cell = (nsb > 0.1).sum() / len(nsb)
-    nsb_ratio_all = noise_reads.sum() / signal_reads.sum()
-
-    st.text(f"candidate-barcodes: {num_candidate_prot_bars}")
-    st.text(f"candidate-reads: {candidate_reads}")
-    st.text(f"%candidate-reads {candidate_reads / prot_total_reads:0.3f}")
-    st.text(f"cells-after-merge: {cells_after_merge}")
-
-    st.text(f"%reads-to-cells-of-valid-barcodes {prot_reads_to_cells:0.3f}")
-    st.text(f"%reads-to-cells-of-total: {prot_reads_to_cells_total_reads:0.3f}")
-    st.text(f"%valid-ab-barcodes-that-are-cells: {prot_bar_per_cell:0.3f}")
-    st.text(f"%reads-by-aggregates: {percentage_aggregates:.3f}")
-    st.text(f"avg-ab-reads: {avg_reads_per_ab_cell}")
-    st.text(f"median-ab-reads: {med_reads_per_ab_cell}")
-    st.text(f"NSB: {nsb_ratio_all}")
-    st.text(f"NSB-proportion: {nsb_ratio_cell}")
-    st.text(f"total-ab: {total_ab}")
-
-    st.text(f"%dna-reads-to-cells: {dna_reads_to_cells:0.3f}")
-    st.text(f"%dna-reads-to-merged-cells: {dna_reads_to_merged_cells:0.3f}")
-    st.text(f"dna-reads-per-cell-per-amp: {sample.cnv.layers['read_counts'].mean().mean():.2f}")
-    st.text(f"ado-rate: {sample.dna.metadata['ado_rate']}")
-    st.text(f"avg-dna-panel-uniformity {sample.dna.metadata['avg_panel_uniformity']}")
-    st.text(f"0.2x-dna-panel-uniformity {uniformity}")
-
-
-def get_aggregates(assay_object, threshold=10):
-    # Takes protein assay with all barcodes as argument
-    # Percentage of the total reads to that AB in one cell required to be considered an aggreagte
-
-    # Reads taken by the barcode-antibody as a percentage of total reads to that antibody
-    read_counts = assay_object.layers["read_counts"]
-    percent_reads = 100 * read_counts / read_counts.sum(axis=0)
-    df_per_ab = pd.DataFrame(
-        percent_reads, index=assay_object.row_attrs["barcode"], columns=assay_object.col_attrs["id"]
-    )
-
-    # Reads taken by the barcode-antibody as a percentage of total overall reads
-    read_counts = assay_object.layers["read_counts"]
-    percent_reads = 100 * read_counts / read_counts.sum().sum()
-    df_per_total = pd.DataFrame(
-        percent_reads, index=assay_object.row_attrs["barcode"], columns=assay_object.col_attrs["id"]
-    )
-
-    # Apply the threshold on the per antibody percentage
-    agg_bars = df_per_ab.loc[(df_per_ab > threshold).any(axis=1), :]
-    agg_percent_ab = agg_bars[agg_bars > threshold]
-    agg_percent_ab = (
-        agg_percent_ab.reset_index()
-        .melt(id_vars="index", var_name="antibody", value_name="per_ab")
-        .dropna()
-    )
-
-    # Apply the threshold on the per antibody percentage but get values from the DataFrame with the total percentages
-    agg_bars_per_total = df_per_total.loc[(df_per_ab > threshold).any(axis=1), :]
-    agg_percent_total = agg_bars_per_total[agg_bars > threshold]
-    agg_percent_total = (
-        agg_percent_total.reset_index()
-        .melt(id_vars="index", var_name="antibody", value_name="per_total")
-        .dropna()
-    )
-
-    # Merge the two calculated values and return as a DataFrame
-    agg_percent = pd.merge(agg_percent_ab, agg_percent_total)
-
-    return agg_percent

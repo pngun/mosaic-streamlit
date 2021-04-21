@@ -1,7 +1,6 @@
 import os
 import time
 
-import boto3
 import missionbio.mosaic.io as mio
 import numpy as np
 import streamlit as st
@@ -11,9 +10,7 @@ import interface
 
 
 def run():
-    file, load_raw, apply_filter, kind, should_save, save_name, info = render()
-    if kind == DFT.S3:
-        file = download(file)
+    file, load_raw, apply_filter, should_save, save_name, info = render()
 
     if file is None:
         interface.error(
@@ -29,18 +26,7 @@ def run():
 
 def render():
     with st.sidebar.beta_expander("Files", expanded=True):
-        interface.info("Load or download a file from s3")
         info = st.empty()
-
-        col1, col2 = st.beta_columns([0.3, 1])
-        with col1:
-            st.markdown(f"<sup><p style='margin-bottom:22px'></p></sup>", unsafe_allow_html=True)
-            load_raw = st.checkbox("Raw")
-        with col2:
-            st.markdown(f"<sup><p style='margin-bottom:22px'></p></sup>", unsafe_allow_html=True)
-            apply_filter = st.checkbox("Filter", False)
-
-        link = st.text_input("Load from s3", value="")
 
         if not os.path.exists(DFT.H5_FOLDER / "downloads"):
             os.mkdir(DFT.H5_FOLDER / "downloads/")
@@ -62,19 +48,20 @@ def render():
             else:
                 return name
 
-        kind = None
         selector = st.empty()
         file = selector.selectbox("Load existing file", filenames, format_func=shownames)
 
-        if link != "":
-            kind = DFT.S3
-            file = link
-        elif file is not None:
+        if file is not None:
             if file in downloaded_files:
                 file = DFT.H5_FOLDER / f"downloads/{file}"
             else:
                 file = DFT.H5_FOLDER / f"analyzed/{file}"
-            kind = DFT.LOCAL
+
+        col1, col2 = st.beta_columns([0.3, 1])
+        with col1:
+            load_raw = st.checkbox("Raw")
+        with col2:
+            apply_filter = st.checkbox("Filter", False)
 
         typed_name = st.text_input("Save, download or delete the given file", value="")
 
@@ -109,27 +96,7 @@ def render():
                 os.remove(typed_name)
                 interface.rerun()
 
-    return file, load_raw, apply_filter, kind, should_save, typed_name, info
-
-
-@st.cache(max_entries=1, show_spinner=False)
-def download(link):
-    interface.status("Downloading from s3.")
-
-    s3 = boto3.client("s3")
-    link = link.replace("s3://", "")
-    link = link.split("/")
-    bucket, file = link[0], "/".join(link[1:])
-    filename = file.split("/")[-1]
-    filename = DFT.H5_FOLDER / f"downloads/{filename}"
-    filename = str(filename)
-    try:
-        s3.download_file(bucket, file, filename)
-    except Exception as e:
-        interface.status("Done.")
-        interface.error(f"Could not find the given h5 file. {e}")
-
-    return filename
+    return file, load_raw, apply_filter, should_save, typed_name, info
 
 
 @st.cache(max_entries=1, show_spinner=False, allow_output_mutation=True)

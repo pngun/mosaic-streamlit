@@ -67,6 +67,11 @@ if __name__ == "__main__":
             "--server.port=10000",
             "--server.headless=true",
             "--server.fileWatcherType=none",
+            "--theme.primaryColor=#54B4D4",
+            "--theme.backgroundColor=#fff",
+            "--theme.secondaryBackgroundColor=#F0F2F6",
+            "--theme.textColor=#262730",
+            "--theme.font='sans serif'",
         ]
 
     sys.exit(stcli.main())
