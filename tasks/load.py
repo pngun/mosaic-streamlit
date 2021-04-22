@@ -66,6 +66,9 @@ def render():
         typed_name = st.text_input("Save, download or delete the given file", value="")
 
         def _get_file_from_name(typed_name):
+            if len(typed_name) == 0:
+                interface.error("Please enter a filename")
+
             if typed_name[-3:] == ".h5":
                 typed_name = typed_name[:-3]
 
