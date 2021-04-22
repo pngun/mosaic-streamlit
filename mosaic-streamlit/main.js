@@ -47,16 +47,23 @@ const run_on_mac = () => {
 }
 
 const about = (parent) => {
+  const windowOptions = process.platform == "win32" ? {
+    modal: true,
+  } : {
+    frame: false,
+    titleBarStyle: 'hiddenInset',
+  }
   aboutWindow = new BrowserWindow({
     parent: parent,
-    modal: true,
     show: false,
     width: 400,
-    height: 400
+    height: 400,
+    ...windowOptions
   })
   aboutWindow.loadFile('release.html')
   aboutWindow.removeMenu()
   aboutWindow.once('ready-to-show', () => {
+    aboutWindow.setClosable(true)
     aboutWindow.show()
   })
 }
@@ -105,8 +112,10 @@ function createWindow () {
 
 app.whenReady().then(() => {
   const template = [
-    { label: 'Quit', role: 'quit' },
-    { label: 'About', click: () => { about(mainWindow) } },
+    { label: 'Options', submenu: [
+      { label: 'Quit', role: 'quit' },
+      { label: 'About', click: () => { about(mainWindow) } },
+    ]}
   ]
   menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
