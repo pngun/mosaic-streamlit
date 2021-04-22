@@ -43,16 +43,24 @@ jobs:
           if-no-files-found: ignore
         if: ${{ env.SYSTEM_NAME == 'linux' }}
 
+      - run: mv release.dmg mosaic-streamlit-${{ env.PRODUCT_OS_AND_VERSION }}.dmg
+        shell: bash
+        if: ${{ env.SYSTEM_NAME == 'macos' }}
+
+      - run: mv release.exe mosaic-streamlit-${{ env.PRODUCT_OS_AND_VERSION }}.exe
+        shell: bash
+        if: ${{ env.SYSTEM_NAME == 'windows' }}
+
       - uses: actions/upload-artifact@v2
         with:
           name: mosaic-streamlit-${{ env.PRODUCT_OS_AND_VERSION }}.dmg
-          path: ${{ github.workspace }}/release.dmg
+          path: ${{ github.workspace }}/mosaic-streamlit-${{ env.PRODUCT_OS_AND_VERSION }}.dmg
           if-no-files-found: ignore
         if: ${{ env.SYSTEM_NAME == 'macos' }}
 
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.PRODUCT_OS_AND_VERSION }}-release.exe
-          path: ${{ github.workspace }}/release.exe
+          name: mosaic-streamlit-${{ env.PRODUCT_OS_AND_VERSION }}.exe
+          path: ${{ github.workspace }}/mosaic-streamlit-${{ env.PRODUCT_OS_AND_VERSION }}.exe
           if-no-files-found: ignore
         if: ${{ env.SYSTEM_NAME == 'windows' }}
