@@ -95,7 +95,7 @@ def render(sample, assay_names):
 def first_pass_preprocess(sample, assay_args):
     for assay in [sample.dna, sample.protein]:
         if assay is not None and assay.metadata[DFT.INITIALIZE]:
-            if assay.name == DNA_ASSAY:
+            if assay.name == DNA_ASSAY and len(assay_args) == 6:
                 preprocess_dna(sample, True, *assay_args)
             elif assay.name == PROTEIN_ASSAY:
                 preprocess_protein(sample, True, [])
