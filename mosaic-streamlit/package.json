@@ -1,7 +1,7 @@
 {
   "name": "mosaic-streamlit",
   "productName": "mosaic-streamlit",
-  "version": "0.0.1",
+  "version": "0.4.2",
   "description": "Mosaic",
   "main": "main.js",
   "scripts": {
