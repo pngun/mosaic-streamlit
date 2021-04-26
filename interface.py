@@ -38,12 +38,12 @@ def status(msg):
 
 
 def download(download_path):
-    name = download_path.split("/")[-1]
+    name = download_path.name
     shutil.rmtree(DFT.DOWNLOADS_PATH)
     os.makedirs(DFT.DOWNLOADS_PATH)
     shutil.copy(download_path, DFT.DOWNLOADS_PATH / name)
     DOWNLOAD.markdown(
-        f"<b>[Click here to download {name}](downloads/{name})</b>", unsafe_allow_html=True
+        f"<a href='downloads/{name}'>Click here to download {name}</a>", unsafe_allow_html=True
     )
 
 
