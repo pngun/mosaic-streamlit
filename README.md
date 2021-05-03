@@ -25,3 +25,8 @@ For s3 access, credentials have to be added to `/.aws/credentials`
 The downloaded h5 files must be stored under `./h5/downloads/`
 to be accessible throught the UI.
 
+### To Do
+
+* The parameters render the saved values when loading an analyzed file
+* Documenting the code
+* Documenting the procedure to add new workflows
