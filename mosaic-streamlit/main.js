@@ -110,12 +110,25 @@ function createWindow () {
   mainWindow.loadFile('loading.html')
 }
 
+function createAnotherWindow () {
+  const anotherWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js')
+    }
+  })
+  anotherWindow.loadURL('http://localhost:10000/')
+}
+
 app.whenReady().then(() => {
   const template = [
-    { label: 'Options', submenu: [
-      { label: 'Quit', role: 'quit' },
+    { label: 'Application', submenu: [
+      { label: 'New Window', click: () => { createAnotherWindow() } },
       { label: 'About', click: () => { about(mainWindow) } },
-    ]}
+      { label: 'Quit', role: 'quit' },
+    ]},
+    { role: 'editMenu' },
   ]
   menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
