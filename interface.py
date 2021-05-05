@@ -1,5 +1,6 @@
 import os
 import shutil
+from pathlib import Path
 
 import streamlit as st
 
@@ -38,6 +39,8 @@ def status(msg):
 
 
 def download(download_path):
+    if isinstance(download_path, str):
+        download_path = Path(download_path)
     name = download_path.name
     shutil.rmtree(DFT.DOWNLOADS_PATH)
     os.makedirs(DFT.DOWNLOADS_PATH)
