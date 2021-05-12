@@ -1,13 +1,7 @@
 import numpy as np
 import streamlit as st
 from missionbio.h5.constants import NGT
-from missionbio.mosaic.constants import (
-    AF_MISSING,
-    NGT_FILTERED,
-    PCA_LABEL,
-    SCALED_LABEL,
-    UMAP_LABEL,
-)
+from missionbio.mosaic.constants import AF_MISSING, NGT_FILTERED, PCA_LABEL, SCALED_LABEL, UMAP_LABEL
 
 import interface
 import workflows.general.analysis as ann
@@ -50,10 +44,7 @@ class Render:
         args = self.arguments
         with st.sidebar.beta_expander("Data preparation"):
             interface.info(
-                f"Current transformations are:  \n"
-                + f"Scale on {args.get('scale_attribute')}  \n"
-                + f"PCA on {args.get('pca_attribute')}  \n"
-                + f"UMAP on {args.get('umap_attribute')}  \n",
+                f"Current transformations are:  \n" + f"Scale on {args.get('scale_attribute')}  \n" + f"PCA on {args.get('pca_attribute')}  \n" + f"UMAP on {args.get('umap_attribute')}  \n",
             )
 
             form = st.form("Data Preparation form")

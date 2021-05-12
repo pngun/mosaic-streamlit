@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import requests
-from missionbio.h5.constants import ID, NGT, SAMPLE
+from missionbio.h5.constants import ID, NGT
 from missionbio.mosaic.constants import AF_MISSING, NGT_FILTERED, UMAP_LABEL
 
 import interface
@@ -42,25 +42,24 @@ class Compute:
             interface.status("Fetching DNA annotations")
 
             variants = variants[missing_variants]
-            # renamed_variants = np.array([var.replace(":", "-").replace("/", "-") for var in variants], dtype="str")
+            renamed_variants = np.array([var.replace(":", "-").replace("/", "-") for var in variants], dtype="str")
 
-            # url = "https://api.missionbio.io/annotations/v1/variants?ids=" + ",".join(renamed_variants)
-            # r = requests.get(url=url)
+            url = "https://api.missionbio.io/annotations/v1/variants?ids=" + ",".join(renamed_variants)
+            r = requests.get(url=url)
 
-            # data = r.json()
-            # data = [d["annotations"] for d in data]
+            data = r.json()
+            data = [d["annotations"] for d in data]
 
-            # function = [", ".join(d["function"]["value"]) for d in data]
-            # gene = [d["gene"]["value"] for d in data]
-            # protein = [d["protein"]["value"] for d in data]
-            # coding_impact = [d["protein_coding_impact"]["value"] for d in data]
-            # clinvar = [", ".join(d["clinvar"]["value"]) for d in data]
-            # dann = np.array([d["impact"]["value"] for d in data])
-            # dann[dann == ""] = 0
-            # dann = np.round(dann.astype(float), 2)
+            function = [", ".join(d["function"]["value"]) for d in data]
+            gene = [d["gene"]["value"] for d in data]
+            protein = [d["protein"]["value"] for d in data]
+            coding_impact = [d["protein_coding_impact"]["value"] for d in data]
+            clinvar = [", ".join(d["clinvar"]["value"]) for d in data]
+            dann = np.array([d["impact"]["value"] for d in data])
+            dann[dann == ""] = 0
+            dann = np.round(dann.astype(float), 2)
 
-            # df = pd.DataFrame([gene, function, protein, coding_impact, clinvar, dann], index=args.annot_types).T
-            df = pd.DataFrame(index=args.annot_types).T
+            df = pd.DataFrame([gene, function, protein, coding_impact, clinvar, dann], index=args.annot_types).T
             df[args.VARIANT] = variants
 
             df = df[[args.VARIANT] + args.annot_types]

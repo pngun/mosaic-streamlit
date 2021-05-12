@@ -1,11 +1,11 @@
+from missionbio.mosaic.constants import NORMALIZED_READS
+
 import interface
+import workflows.general.analysis as ann
 
 from .arguments import Arguments
 from .compute import Compute
 from .render import Render
-
-import workflows.general.analysis as ann
-from missionbio.mosaic.constants import NORMALIZED_READS
 
 
 class Steps:

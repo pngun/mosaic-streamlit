@@ -2,9 +2,8 @@ import os
 import shutil
 import time
 
-import numpy as np
-
 import missionbio.mosaic.io as mio
+import numpy as np
 
 import interface
 import workflows.general.analysis as ann

@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from missionbio.mosaic.constants import READS, GENE_NAME
+from missionbio.mosaic.constants import GENE_NAME, READS
 
 import interface
 import workflows.general.analysis as ann

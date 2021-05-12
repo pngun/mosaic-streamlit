@@ -1,9 +1,8 @@
+import matplotlib.pyplot as plt
 import streamlit as st
 from missionbio.h5.constants import SAMPLE
 
 import interface
-import matplotlib.pyplot as plt
-
 import workflows.general.analysis as ann
 
 
@@ -58,8 +57,7 @@ class Render:
 
         args = self.arguments
 
-        VISUALS = {args.MULTISAMPLE: [[0.75, 0.1, 0.3, 0.3, 1.4], [args.FISHPLOT, args.BARPLOT]],
-                   args.MULTIOMIC: [[0.75, 0.1, 0.5, 0.5, 1], [args.HEATMAP, args.DNA_ANALYTE_PLOT]]}
+        VISUALS = {args.MULTISAMPLE: [[0.75, 0.1, 0.3, 0.3, 1.4], [args.FISHPLOT, args.BARPLOT]], args.MULTIOMIC: [[0.75, 0.1, 0.5, 0.5, 1], [args.HEATMAP, args.DNA_ANALYTE_PLOT]]}
 
         options = VISUALS[args.category][1]
         column_sizes = VISUALS[args.category][0]

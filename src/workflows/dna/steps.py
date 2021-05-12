@@ -1,10 +1,9 @@
 import interface
+import workflows.general.analysis as ann
 
 from .arguments import Arguments
 from .compute import Compute
 from .render import Render
-
-import workflows.general.analysis as ann
 
 
 class Steps:
