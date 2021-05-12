@@ -9,5 +9,4 @@ pyinstaller --additional-hooks-dir=hooks \
   --hidden-import _plotly_utils \
   --clean run.py
 
-cp ../*.py ./dist/run/
-cp -r ../tasks ./dist/run/
+cp -r ../src/ ./dist/run/
