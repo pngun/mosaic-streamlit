@@ -76,6 +76,14 @@ class ArgumentsHandler:
     def __setattr__(self, name, value, overwrite=False):
         """
         Check that the no new attributes are fetched
+
+        Args:
+            name: str
+            value: str
+            overwrite: bool
+
+        Raises:
+            ImplementationError: If attribute not initialized or duplicated
         """
 
         if "attributes" in dir(self):
@@ -91,6 +99,12 @@ class ArgumentsHandler:
     def __getattr__(self, name):
         """
         Check that the no new attributes are fetched
+
+        Args:
+            name: str
+
+        Raises:
+            ImplementationError: If attribute accessed without initialization
         """
 
         if "attributes" in dir(self) and name not in self.attributes:
@@ -101,6 +115,15 @@ class ArgumentsHandler:
     def get(self, key):
         """
         Retrieve the value from the h5 file
+
+        Args:
+            key: str
+
+        Returns:
+            value of attribute
+
+        Raises:
+            ImplementationError: If attribute does not exist
         """
 
         if key not in self.attributes:
@@ -122,6 +145,12 @@ class ArgumentsHandler:
         in the assay metadata. This mapping is done
         to ensure unique keys and to prevent and
         overwritting of data.
+
+        Args:
+            key: str
+
+        Returns:
+            encoded string
         """
 
         return f"__mosaic_{self.assaykey}_{key}"
@@ -129,7 +158,11 @@ class ArgumentsHandler:
     def save(self):
         """
         Stores all the current arguments in the h5 file
+
+        Raises:
+            ImplementationError: If new attribute found
         """
+
         ogassay = getattr(ann.data.sample, f"_original_{self.assaykey}")
         assay = getattr(ann.data.sample, self.assaykey)
         for key in dir(self):

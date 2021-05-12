@@ -99,6 +99,15 @@ def cached_func(method, assay, *args, **kwargs):
     A wrapper for any function that needs to be cached.
 
     Currently used to draw plots which are cached.
+
+    Args:
+        method: function to be called
+        assay: assay that should be checked for updates
+        args: passed to method
+        kwargs: passed to method
+
+    Returns:
+        value returned by method
     """
 
     return method(*args, **kwargs)
