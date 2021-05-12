@@ -218,3 +218,4 @@ class Arguments(ArgumentsHandler):
         self.points = False
 
         self.annotations = pd.DataFrame(columns=["Variant"])
+        self.shown_annotations = self.annotations

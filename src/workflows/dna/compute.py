@@ -65,7 +65,6 @@ class Compute:
             df = df[[args.VARIANT] + args.annot_types]
 
             args.annotations = pd.merge(args.annotations, df, how="outer")
-            args.annotations.index += 1
 
     def prepare(self):
         args = self.arguments
@@ -138,7 +137,6 @@ class Compute:
         assay = args.subassay
 
         # Adding cluster information
-        ids = args.annotations[args.VARIANT]
         med_af, _, _, _ = assay.feature_signature(AF_MISSING)
         med_af = med_af.astype(int).astype(str)
 
@@ -154,11 +152,18 @@ class Compute:
         clonedf.loc[:, "%Cells missing"] = missing
 
         clonedf.index = assay.col_attrs[args.VARIANT].copy()
-        clonedf = clonedf.loc[ids, :]
 
-        args.annotations = args.annotations[[args.VARIANT] + args.annot_types]
+        var = assay.col_attrs[args.VARIANT].copy()
+        show_id = np.isin(args.annotations[args.VARIANT], var)
+        order = args.annotations.loc[show_id, args.VARIANT].values
+        clonedf = clonedf.loc[order, :]
+
+        args.shown_annotations = args.annotations[[args.VARIANT] + args.annot_types]
+        args.shown_annotations = args.shown_annotations.loc[show_id, :]
         for lab in clonedf.columns:
-            args.annotations[lab] = clonedf[lab].values
+            args.shown_annotations[lab] = clonedf[lab].values
+
+        args.shown_annotations.index = np.arange(args.shown_annotations.shape[0]) + 1
 
         # Generate plots
         kind = args.visual_type
