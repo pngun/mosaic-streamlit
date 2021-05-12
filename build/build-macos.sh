@@ -10,5 +10,5 @@ pyinstaller --additional-hooks-dir=hooks \
   --clean -w run.py
 
 rm -rf ./dist/run/
-cp -r ../src/ ./dist/run.app/Contents/Resources/
-cp -r ../src/ ./dist/run.app/Contents/MacOS/
+cp -r ../src ./dist/run.app/Contents/Resources/
+cp -r ../src ./dist/run.app/Contents/MacOS/
