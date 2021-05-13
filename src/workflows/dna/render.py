@@ -241,5 +241,6 @@ class Render:
             else:
                 return ""
 
-        df = args.shown_annotations.astype(str).style.applymap(highlight_het_hom)
+        # df = args.shown_annotations.astype(str).style.applymap(highlight_het_hom)
+        df = args.shown_annotations.astype(str)
         st.dataframe(df, height=650)
