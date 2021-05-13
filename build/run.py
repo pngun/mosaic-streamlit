@@ -25,9 +25,7 @@ if __name__ == "__main__":
             raise UIRunningException
 
         while True:
-            val = input(
-                "\nCheck for updates?\n(This is in active development. Features that previously worked may no longer work. This is for research purposes only.)\nyes/[no] -  "
-            )
+            val = input("\nCheck for updates?\n(This is in active development. Features that previously worked may no longer work. This is for research purposes only.)\nyes/[no] -  ")
             if val not in ["yes", "no", ""]:
                 print("Invalid input. Enter one of 'yes' or 'no', or press enter to skip")
             else:
@@ -61,17 +59,12 @@ if __name__ == "__main__":
     # streamlit can take a while to import
     from streamlit import cli as stcli
 
-    sys.argv = ["streamlit", "run", f"{launchdir}/app.py", "--global.developmentMode=false"]
+    sys.argv = ["streamlit", "run", f"{launchdir}/src/app.py", "--global.developmentMode=false"]
     if GUI_FRONTEND_RUNNING:
         sys.argv += [
             "--server.port=10000",
             "--server.headless=true",
             "--server.fileWatcherType=none",
-            "--theme.primaryColor=#54B4D4",
-            "--theme.backgroundColor=#fff",
-            "--theme.secondaryBackgroundColor=#F0F2F6",
-            "--theme.textColor=#262730",
-            "--theme.font='sans serif'",
         ]
 
     sys.exit(stcli.main())
