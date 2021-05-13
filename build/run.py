@@ -12,8 +12,8 @@ if __name__ == "__main__":
     # streamlit can take a while to import
     from streamlit import cli as stcli
 
-    sys.argv = ["streamlit", "run", f"app.py", "--global.developmentMode=false"]
-    if GUI_FRONTEND_RUNNING or True:
+    sys.argv = ["streamlit", "run", f"{launchdir}/src/app.py", "--global.developmentMode=false"]
+    if GUI_FRONTEND_RUNNING:
         sys.argv += [
             "--server.port=10000",
             "--server.headless=true",
