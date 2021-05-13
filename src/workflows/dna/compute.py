@@ -142,7 +142,7 @@ class Compute:
 
         name = {0: "WT", 1: "HET", 2: "HOM", 3: "MISS"}
         med_ngt, _, _, _ = assay.feature_signature(NGT)
-        med_ngt = med_ngt.applymap(lambda x: name[x]).astype(str)
+        med_ngt = med_ngt.applymap(lambda x: name[round(x)]).astype(str)
 
         missing = assay.get_attribute(NGT_FILTERED, constraint="row+col")
         missing = (missing == 3).sum(axis=0) / missing.shape[0]
