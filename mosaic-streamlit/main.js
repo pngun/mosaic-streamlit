@@ -1,4 +1,6 @@
-const {app, Menu, MenuItem, BrowserWindow} = require('electron')
+const {
+  app, ipcMain, webContents, globalShortcut, Menu, MenuItem, BrowserWindow
+} = require('electron')
 
 if(require('electron-squirrel-startup')) app.quit()
 
@@ -125,6 +127,13 @@ app.whenReady().then(() => {
   const template = [
     { label: 'Application', submenu: [
       { label: 'New Window', click: () => { createAnotherWindow() } },
+      {
+        label: 'Search',
+        accelerator: 'CmdOrCtrl+F',
+        click() {
+          mainWindow.webContents.send('toggle-find')
+        }
+      },
       { label: 'About', click: () => { about(mainWindow) } },
       { label: 'Quit', role: 'quit' },
     ]},
@@ -134,6 +143,10 @@ app.whenReady().then(() => {
   Menu.setApplicationMenu(menu)
 
   createWindow()
+
+  ipcMain.on('find-text', (event, text) => {
+    mainWindow.webContents.findInPage(text)
+  })
   
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
