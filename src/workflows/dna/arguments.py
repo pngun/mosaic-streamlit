@@ -190,9 +190,9 @@ class Arguments(ArgumentsHandler):
         self.UMAP = "UMAP"
 
         self.FEATURE_SCATTER = "Feature Scatter"
-        self.VIOLINPLOT = "Violinplot"
-        self.RIDGEPLOT = "Ridgeplot"
-        self.STRIPPLOT = "Stripplot"
+        self.VIOLINPLOT = "Violin plot"
+        self.RIDGEPLOT = "Ridge plot"
+        self.STRIPPLOT = "Strip plot"
 
         self.visual_type = self.HEATMAP
 
