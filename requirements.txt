@@ -69,7 +69,7 @@ pyarrow==3.0.0
 pycparser==2.20
 pydeck==0.6.1
 Pygments==2.8.1
-pyinstaller==4.2
+pyinstaller==4.3
 pyinstaller-hooks-contrib==2021.1
 pynndescent==0.5.2
 pyparsing==2.4.7
