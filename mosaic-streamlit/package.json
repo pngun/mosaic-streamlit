@@ -3,7 +3,7 @@
   "productName": "mosaic-streamlit",
   "version": "0.4.2",
   "description": "Mosaic",
-  "main": "main.js",
+  "main": "./.webpack/main",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -19,34 +19,86 @@
   "license": "MIT",
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "extraResource": "runnable"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-dmg",
-          "platforms": ["darwin"],
+          "platforms": [
+            "darwin"
+          ],
           "config": {
             "format": "ULFO"
           }
         },
         {
           "name": "@electron-forge/maker-squirrel",
-          "platforms": ["win32"]
+          "platforms": [
+            "win32"
+          ]
         },
         {
           "name": "@electron-forge/maker-zip",
-          "platforms": ["linux"]
+          "platforms": [
+            "linux"
+          ]
         }
+      ],
+      "plugins": [
+        [
+          "@electron-forge/plugin-webpack",
+          {
+            "mainConfig": "./webpack.main.config.js",
+            "renderer": {
+              "config": "./webpack.renderer.config.js",
+              "entryPoints": [
+                {
+                  "html": "./src/index.html",
+                  "js": "./src/renderer.js",
+                  "name": "main_window"
+                },
+                {
+                  "html": "./src/settings.html",
+                  "js": "./src/settings.jsx",
+                  "name": "settings"
+                },
+                {
+                  "html": "./src/loading.html",
+                  "js": "./src/loading.jsx",
+                  "name": "loading"
+                }
+              ]
+            }
+          }
+        ]
       ]
     }
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
+    "electron-settings": "^4.0.2",
+    "electron-squirrel-startup": "^1.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "source-map-support": "^0.5.19"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.54",
-    "@electron-forge/maker-dmg": "^6.0.0-beta.54",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
-    "@electron-forge/maker-zip": "^6.0.0-beta.54",
-    "electron": "12.0.1"
+    "@babel/core": "^7.14.3",
+    "@babel/preset-react": "^7.13.13",
+    "@electron-forge/cli": "^6.0.0-beta.57",
+    "@electron-forge/maker-dmg": "^6.0.0-beta.57",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.57",
+    "@electron-forge/maker-zip": "^6.0.0-beta.57",
+    "@electron-forge/plugin-webpack": "6.0.0-beta.57",
+    "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^4.2.1",
+    "electron": "^13.1.0",
+    "electron-webpack": "^2.8.2",
+    "eslint": "^7.27.0",
+    "file-loader": "^6.2.0",
+    "node-loader": "^2.0.0",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.46.0"
   }
 }

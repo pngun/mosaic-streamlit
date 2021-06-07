@@ -10,3 +10,4 @@ pyinstaller --additional-hooks-dir=hooks \
   --clean run.py
 
 cp -r ../src/ ./dist/run/
+mv ./dist/run ./dist/runnable

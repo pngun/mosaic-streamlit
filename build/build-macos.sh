@@ -12,3 +12,4 @@ pyinstaller --additional-hooks-dir=hooks \
 rm -rf ./dist/run/
 cp -r ../src ./dist/run.app/Contents/Resources/
 cp -r ../src ./dist/run.app/Contents/MacOS/
+mv ./dist/run.app ./dist/runnable
