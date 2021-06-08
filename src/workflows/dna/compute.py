@@ -10,6 +10,7 @@ import workflows.general.analysis as ann
 
 class Compute:
     def __init__(self, arguments):
+        self.no_internet_connection = False
         self.arguments = arguments
         ann.data.add_label(ann.data.sample.dna, self.arguments.DNA_LABEL)
 
@@ -45,9 +46,13 @@ class Compute:
             renamed_variants = np.array([var.replace(":", "-").replace("/", "-") for var in variants], dtype="str")
 
             url = "https://api.missionbio.io/annotations/v1/variants?ids=" + ",".join(renamed_variants)
-            r = requests.get(url=url)
+            try:
+                r = requests.get(url=url)
+                data = r.json()
+            except Exception:
+                self.no_internet_connection = True
+                data = {}
 
-            data = r.json()
             data = [d["annotations"] for d in data]
 
             function = [", ".join(d["function"]["value"]) for d in data]
@@ -132,6 +137,10 @@ class Compute:
         ann.data.add_label(assay, args.DNA_LABEL)
 
     def visual(self):
+
+        if self.no_internet_connection:
+            no_internet_connection_msg = "No internet connection, some annotations/values are not available."
+            interface.warning(no_internet_connection_msg)
 
         args = self.arguments
         assay = args.subassay

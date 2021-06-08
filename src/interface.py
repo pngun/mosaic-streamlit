@@ -27,6 +27,22 @@ def info(msg, component=st):
     component.caption(msg)
 
 
+def warning(msg):
+    error_style = """
+    <style>
+    .error-font {
+        color: rgb(191, 48, 53);
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0.7rem 0px 0.5rem;
+        line-height: 1.6;
+    }
+    </style>
+    """
+    st.markdown(error_style, unsafe_allow_html=True)
+    st.markdown(f'<p class="error-font">{msg}</p>', unsafe_allow_html=True)
+
+
 def error(msg):
     error_style = """
     <style>
