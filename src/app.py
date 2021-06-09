@@ -1,7 +1,12 @@
-import streamlit as st
+# FIXME: setup Sentry for all builds until we figure out what we need
+from sentry import setup_sentry
 
-import interface
-from tasks import load, selection
+setup_sentry()
+
+import streamlit as st  # noqa: E402
+
+import interface  # noqa: E402
+from tasks import load, selection  # noqa: E402
 
 # -------- Sample selection
 st.set_page_config(page_title="Mosaic", layout="wide")
