@@ -16,7 +16,8 @@ app.on('ready', async () => {
   setApplicationMenu(mainWindow)
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
 
-  const streamlit = runner(mainWindow)
+  const sentry_enabled = await settings.get('sentry.enabled')
+  const streamlit = runner(mainWindow, sentry_enabled)
   console.log('streamlit', streamlit.pid)
   appRuntime['streamlit'] = streamlit
 
