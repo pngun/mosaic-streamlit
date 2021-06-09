@@ -19,8 +19,13 @@ const setApplicationMenu = (mainWindow) => {
       { label: 'Quit', role: 'quit' },
     ]},
     { role: 'editMenu' },
-    { role: 'viewMenu' },
   ]
+
+  if (process.env.MOSAIC_STREAMLIT_DEBUG) {
+    template.push(
+      { role: 'viewMenu' }
+    )
+  }
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
 }
