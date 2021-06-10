@@ -34,7 +34,7 @@ class Render:
 
         with st.sidebar.beta_expander("Export", expanded=True):
             info = st.empty()
-            msg = "Download the analysed data.  \n  \n"
+            msg = "Export the analysed data.  \n  \n"
 
             cols = st.beta_columns([1, 1])
             with cols[0]:
@@ -47,7 +47,7 @@ class Render:
 
             with cols[1]:
                 st.markdown(f"<p style='margin-bottom:36px'></p>", unsafe_allow_html=True)
-                export = st.button("Download Data")
+                export = st.button("Export Data")
 
             interface.info(msg, info)
 
