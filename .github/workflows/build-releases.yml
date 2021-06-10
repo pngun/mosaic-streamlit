@@ -28,7 +28,7 @@ jobs:
           node-version: '14'
 
       - name: Build release(s)
-        uses: MissionBio/actions@v0.1.2
+        uses: MissionBio/actions@v0.1.3
         with:
           source_path: .
           build_path: build

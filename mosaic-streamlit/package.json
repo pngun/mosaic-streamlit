@@ -21,7 +21,7 @@
     "forge": {
       "packagerConfig": {
         "extraResource": "runnable",
-        "Win32MetadataOptions": {
+        "win32metadata": {
           "CompanyName": "MissionBio"
         }
       },
