@@ -19,4 +19,4 @@ export SENTRY_SDK=$(python -c "import sentry_sdk;print(sentry_sdk.__file__)")
 echo $SENTRY_SDK 
 export SENTRY_SDK_PATH=$(dirname $SENTRY_SDK)
 echo $SENTRY_SDK_PATH
-cp -r $SENTRY_SDK_PATH ./dist/runnable/
+cp -r $SENTRY_SDK_PATH ./dist/runnable/Contents/MacOS/
