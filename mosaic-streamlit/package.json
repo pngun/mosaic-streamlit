@@ -1,8 +1,8 @@
 {
   "name": "mosaic-streamlit",
-  "productName": "mosaic-streamlit",
+  "productName": "Insights v4.0 (beta)",
   "version": "0.4.2",
-  "description": "Mosaic",
+  "description": "Insights v4.0 (beta)",
   "main": "./.webpack/main",
   "scripts": {
     "start": "electron-forge start",
@@ -20,7 +20,10 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "extraResource": "runnable"
+        "extraResource": "runnable",
+        "Win32MetadataOptions": {
+          "CompanyName": "MissionBio"
+        }
       },
       "makers": [
         {
