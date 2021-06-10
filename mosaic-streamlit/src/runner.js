@@ -1,29 +1,32 @@
 import path from 'path'
 import childProcess from 'child_process'
 
-console.log('path', __dirname)
 const electronRoot = path.join(__dirname, "..", "..", "..")
-///Users/aljosa/Project/mosaic-streamlit/mosaic-streamlit/.webpack/main/
 const serverRunningText = "Network URL"
 var serverRunning = false
 var newLineSent = false
 
-const run_on_win = () => {
+const run_on_win = (sentry_enabled) => {
   console.log('run on win')
+  const isSentryEnabled = sentry_enabled ? 'true' : 'false'
   const run_path = path.join(electronRoot, "runnable", "run.exe")
   const runtime = childProcess.spawn(
     run_path,
     [],
     {
       shell: false,
-      env: { MOSAIC_STREAMLIT_GUI_RUNNING: 'true' }
+      env: {
+        MOSAIC_STREAMLIT_GUI_RUNNING: 'true',
+        MOSAIC_STREAMLIT_SENTRY_ENABLED: isSentryEnabled
+      }
     }
   )
   console.log('run on win pid', runtime.pid)
   return runtime
 }
 
-const run_on_mac = () => {
+const run_on_mac = (sentry_enabled) => {
+  const isSentryEnabled = sentry_enabled ? 'true' : 'false'
   console.log('run on mac')
   const macRoot = path.join(electronRoot, "runnable", "Contents")
   console.log('mac root', macRoot)
@@ -36,7 +39,8 @@ const run_on_mac = () => {
       detached: true,
       env: {
         LC_ALL: 'en_US.UTF-8',
-        MOSAIC_STREAMLIT_GUI_RUNNING: 'true'
+        MOSAIC_STREAMLIT_GUI_RUNNING: 'true',
+        MOSAIC_STREAMLIT_SENTRY_ENABLED: isSentryEnabled
       }
     }
   )
@@ -63,12 +67,12 @@ const run_on_linux = () => {
   return runtime
 }
 
-export default ((targetWindow) => {
+export default ((targetWindow, sentry_enabled) => {
   let runner
   if (process.platform == "win32") {
-    runner = run_on_win()
+    runner = run_on_win(sentry_enabled)
   } else if (process.platform == "darwin") {
-    runner = run_on_mac()
+    runner = run_on_mac(sentry_enabled)
   } else if (process.platform == "linux") {
     runner = run_on_linux()
   }
