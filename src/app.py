@@ -9,9 +9,9 @@ import interface  # noqa: E402
 from tasks import load, selection  # noqa: E402
 
 # -------- Sample selection
-st.set_page_config(page_title="Mosaic", layout="wide")
+st.set_page_config(page_title="Insights", layout="wide")
 interface.init()
-interface.subheader("Mosaic Streamlit")
+interface.subheader("Insights")
 interface.status("Done.")
 
 sample = load.run()
