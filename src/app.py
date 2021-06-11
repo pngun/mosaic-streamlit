@@ -9,9 +9,9 @@ import interface  # noqa: E402
 from tasks import load, selection  # noqa: E402
 
 # -------- Sample selection
-st.set_page_config(page_title="Insights", layout="wide")
+st.set_page_config(page_title="Insights v4.0 (beta)", layout="wide")
 interface.init()
-interface.subheader("Insights")
+interface.subheader("Insights v4.0 (beta)")
 interface.status("Done.")
 
 sample = load.run()

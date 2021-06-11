@@ -5,15 +5,20 @@ import path from 'path'
 import { BrowserWindow } from 'electron'
 
 const newWindow = () => {
-  return new BrowserWindow({
+  const win = new BrowserWindow({
     width: 800,
     height: 600,
+    title: 'Insights v4.0 (beta)',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       enableRemoteModule: true,
       nodeIntegration: true,
     }
   })
+  win.on('page-title-updated', (event) => {
+    event.preventDefault()
+  })
+  return win
 }
 
 export const createAnotherWindow = () => {
@@ -30,6 +35,7 @@ export const settingsWindow = (parent) => {
     show: false,
     width: 400,
     height: 400,
+    title: 'Settings',
     ...windowOptions,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
