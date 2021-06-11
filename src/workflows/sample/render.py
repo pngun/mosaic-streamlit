@@ -34,7 +34,7 @@ class Render:
 
         with st.sidebar.beta_expander("Export", expanded=True):
             info = st.empty()
-            msg = "Export the analysed data.  \n  \n"
+            msg = "Export the analyzed data.  \n  \n"
 
             cols = st.beta_columns([1, 1])
             with cols[0]:
