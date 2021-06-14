@@ -3,7 +3,9 @@ import setApplicationMenu from './menu'
 import createMainWindow from './main_window'
 import runner from './runner'
 import settings from 'electron-settings'
+import setupSentry from './sentry'
 
+setupSentry()
 const appRuntime = {}
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.

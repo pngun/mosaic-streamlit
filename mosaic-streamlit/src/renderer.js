@@ -25,6 +25,8 @@
  *  });
  * ```
  */
+import setupSentry from './sentry'
+setupSentry()
 
 import './index.css';
 

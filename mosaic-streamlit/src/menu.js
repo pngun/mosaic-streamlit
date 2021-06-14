@@ -23,7 +23,8 @@ const setApplicationMenu = (mainWindow) => {
 
   if (process.env.MOSAIC_STREAMLIT_DEBUG) {
     template.push(
-      { role: 'viewMenu' }
+      { role: 'viewMenu' },
+      { label: 'Throw error', click: () => { throw 'Test error' } },
     )
   }
   const menu = Menu.buildFromTemplate(template)
