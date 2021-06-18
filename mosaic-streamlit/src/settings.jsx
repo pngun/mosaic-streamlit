@@ -36,6 +36,9 @@ const Settings = () => {
 
         {Input}&nbsp;Allow sending technical errors to the remote server
       </p>
+      <p style={{ color: 'red' }}>
+        <strong>Note: The changes will be applied the next time you start the application.</strong>
+      </p>
     </div>
   )
 }

@@ -44,7 +44,7 @@ export const settingsWindow = (parent) => {
     }
   })
   settingsWindow.loadURL(SETTINGS_WEBPACK_ENTRY)
-  //settingsWindow.removeMenu()
+  settingsWindow.removeMenu()
   settingsWindow.once('ready-to-show', () => {
     settingsWindow.setClosable(true)
     settingsWindow.show()
