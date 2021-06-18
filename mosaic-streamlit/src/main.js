@@ -18,9 +18,12 @@ app.on('ready', async () => {
   setApplicationMenu(mainWindow)
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
 
-  const sentry_enabled = await settings.get('sentry.enabled')
+  let sentry_enabled = await settings.get('sentry.enabled')
+  if (typeof(sentry_enabled) !== 'boolean') {
+    sentry_enabled = sentry_enabled !== false
+    await settings.set('sentry', {enabled: sentry_enabled})
+  }
   const streamlit = runner(mainWindow, sentry_enabled)
-  console.log('streamlit', streamlit.pid)
   appRuntime['streamlit'] = streamlit
 
   ipcMain.on('find-text', (event, text) => {
@@ -33,10 +36,8 @@ app.on('ready', async () => {
   })
 
   ipcMain.on('sentry-enabled', async (event, enabled) => {
-    console.log('sentry set enabled to:', enabled)
     await settings.set('sentry', {enabled: enabled})
     let sentry_enabled = await settings.get('sentry.enabled')
-    console.log('ipcMain get sentry.enabled', sentry_enabled)
     mainWindow.webContents.send('sentry-enabled', sentry_enabled);
   })
 })
@@ -51,7 +52,6 @@ app.on('window-all-closed', () => {
 })
 
 app.on('will-quit', function () {
-  console.log('appRuntime streamlit pid', appRuntime.streamlit.pid)
   if(process.platform != "win32") {
     process.kill(-appRuntime.streamlit.pid)
   }
