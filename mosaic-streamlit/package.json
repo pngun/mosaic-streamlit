@@ -1,8 +1,8 @@
 {
-  "name": "missionbio-insights",
-  "productName": "Insights v4.0 (beta)",
+  "name": "tapestri-insights",
+  "productName": "Tapestri Insights",
   "version": "0.4.2",
-  "description": "Insights v4.0 (beta)",
+  "description": "Tapestri Insights v4.0 b1",
   "main": "./.webpack/main",
   "scripts": {
     "start": "electron-forge start",
@@ -20,6 +20,7 @@
   "config": {
     "forge": {
       "packagerConfig": {
+        "icon": "./src/static/missionbio.ico",
         "extraResource": "runnable",
         "win32metadata": {
           "CompanyName": "MissionBio"

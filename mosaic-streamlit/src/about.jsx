@@ -7,7 +7,7 @@ const About = () => {
     <div className='loader'>
       <img src={Logo} style={{ width: '90%' }} />
       <p>
-        <strong>Tapestri Insights</strong>
+        <strong>Tapestri Insights v4.0 b1</strong>
       </p>
       <p>
         Copyright (c) 2021 Mission Bio Inc.

@@ -8,7 +8,7 @@ const newWindow = () => {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
-    title: 'Insights v4.0 (beta)',
+    title: 'Tapestri Insights v4.0 b1',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       enableRemoteModule: true,
