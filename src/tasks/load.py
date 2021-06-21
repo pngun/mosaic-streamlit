@@ -24,8 +24,8 @@ def render():
 
         apply_filter = cols[0].checkbox("", key="Filter")
 
-        msg = "Load *only* those variants that pass minimum filters."
-        cols[1].caption(msg)
+        msg = st.markdown("<span style='color:red'>Load *only* those variants that pass minimum filters.</span>", unsafe_allow_html=True)
+        cols[1].caption(str(msg))
         file = st.file_uploader("Load an H5 file")
 
     return file, apply_filter

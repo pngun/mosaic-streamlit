@@ -67,6 +67,11 @@
                   "name": "settings"
                 },
                 {
+                  "html": "./src/about.html",
+                  "js": "./src/about.jsx",
+                  "name": "about"
+                },
+                {
                   "html": "./src/loading.html",
                   "js": "./src/loading.jsx",
                   "name": "loading"

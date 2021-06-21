@@ -10,6 +10,26 @@ window.addEventListener('DOMContentLoaded', () => {
     const result = document.getElementById('search-box').value
     ipcRenderer.send('find-text', result)
   })
+
+
+  const addMontserratFont = () => {
+    var google_fonts = document.createElement('link')
+    google_fonts.rel = 'preconnect'
+    google_fonts.href = 'https://fonts.gstatic.com'
+    document.getElementsByTagName('head')[0].appendChild(google_fonts)
+
+    var link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap'
+    document.getElementsByTagName('head')[0].appendChild(link)
+
+    var css = '* { font-family: "Montserrat", sans-serif !important; }'
+    const style = document.createElement('style');
+    document.getElementsByTagName('head')[0].appendChild(style)
+    style.type = 'text/css';
+    style.appendChild(document.createTextNode(css));
+  }
+  addMontserratFont()
 })
 
 ipcRenderer.on('toggle-find', () => {
