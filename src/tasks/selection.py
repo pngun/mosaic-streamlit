@@ -10,7 +10,7 @@ The key is the name of the module
 of the workflow and the value is
 the name that is shown in the app.
 """
-AVAILABLE_WORKFLOWS = {"dna": "DNA", "cnv": "CNV", "protein": "Protein", "sample": "Sample"}
+AVAILABLE_WORKFLOWS = {"dna": "Genotype", "cnv": "CNV", "protein": "Protein", "sample": "Sample"}
 
 SAMPLE_HASH = {mosample: lambda s: s.name + s.load_time}
 

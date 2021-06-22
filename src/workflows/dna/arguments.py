@@ -27,7 +27,7 @@ class Arguments(ArgumentsHandler):
         super().__init__("dna")
 
     def general_constants(self):
-        self.DNA_LABEL = "DNA Label"
+        self.DNA_LABEL = "Genotype Label"
         self.DENSITY = "Density"
 
     def preprocess(self):
