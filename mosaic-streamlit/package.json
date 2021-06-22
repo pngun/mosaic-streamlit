@@ -20,11 +20,16 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "./src/static/missionbio.ico",
+        "icon": "./src/static/missionbio",
         "extraResource": "runnable",
         "win32metadata": {
           "CompanyName": "MissionBio"
         }
+      },
+      "electronInstallerDMG": {
+        "icon": "./src/static/missionbio.icns",
+        "background": "./src/static/dmg-background.png",
+        "window": { "width": 800, "height": 600 }
       },
       "makers": [
         {
@@ -33,7 +38,8 @@
             "darwin"
           ],
           "config": {
-            "format": "ULFO"
+            "format": "ULFO",
+            "background": "./src/static/dmg-background.png"
           }
         },
         {
