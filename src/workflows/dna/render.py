@@ -27,7 +27,7 @@ class Render:
             form = st.form("Preprocessing form")
             args.dp = form.slider("Minimum read depth (DP)", min_value=0, max_value=100, value=int(args.get("dp")))
             args.gq = form.slider("Minimum genotype quality (GQ)", min_value=0, max_value=100, value=int(args.get("gq")))
-            args.af = form.slider("Minimum allele frequency (VAF)", min_value=0, max_value=100, value=int(args.get("af")))
+            args.af = form.slider("Minimum mutant allele frequency (AF)", min_value=0, max_value=100, value=int(args.get("af")))
             args.std = form.slider("Minimum standard deviation of AF", min_value=0, max_value=100, value=int(args.get("std")))
 
             args.drop_ids = form.multiselect("Variants to discard", args.ids, default=args.get("drop_ids"))
@@ -140,7 +140,7 @@ class Render:
                     del args.palette[lab]
 
             st.caption("---")
-            interface.info("Format of the id names")
+            interface.info("X-axis labels")
             args.id_format = st.multiselect("Annotation Order", [args.VARIANT] + args.annot_types, default=args.get("id_format"))
 
         if len(args.keep_labs) == 0:
