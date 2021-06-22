@@ -20,12 +20,8 @@ def run():
 
 def render():
     with st.sidebar:
-        cols = st.beta_columns([1, 10])
-
-        apply_filter = cols[0].checkbox("", key="Filter")
-
-        msg = st.markdown("<span style='color:red'>Load *only* those variants that pass minimum filters.</span>", unsafe_allow_html=True)
-        cols[1].caption(str(msg))
+        cols = st.beta_columns([11])
+        apply_filter = cols[0].checkbox("Load only pass-filter variants", value=True, key="Filter")
         file = st.file_uploader("Load an H5 file")
 
     return file, apply_filter

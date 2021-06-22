@@ -204,7 +204,7 @@ class Render:
             elif kind == args.VIOLINPLOT:
                 args.fig_attribute = st.selectbox("Attribute", args.LAYERS)
                 args.splitby = st.selectbox("Split by", SPLITBY)
-                args.points = st.checkbox("Box and points", False)
+                args.points = st.checkbox("Box plot and points", False)
                 args.fig_features = st.multiselect("Features", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 2)])
                 if len(args.fig_features) == 0:
                     args.fig_features = None

@@ -220,7 +220,7 @@ class Render:
             elif kind == args.FEATURE_SCATTER:
                 args.fig_layer = st.selectbox("Layer", args.LAYERS)
                 feature1 = st.selectbox("Feature 1", list(assay.ids()), index=0)
-                feature2 = st.selectbox("Feature 1", list(assay.ids()), index=2)
+                feature2 = st.selectbox("Feature 2", list(assay.ids()), index=2)
                 args.fig_features = [feature1, feature2]
                 args.colorby = st.selectbox("Color by", COLORBY)
 
