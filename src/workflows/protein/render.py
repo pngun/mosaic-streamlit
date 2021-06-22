@@ -143,7 +143,7 @@ class Render:
             for lab in lab_set:
                 col1, col2, col3 = st.beta_columns([0.9, 0.15, 0.15])
                 with col1:
-                    new_name = st.text_input(f"Give a new name to {lab}", lab)
+                    new_name = st.text_input(f"Rename Cluster {lab}", lab)
                 with col2:
                     st.markdown(f"<p style='margin-bottom:34px'></p>", unsafe_allow_html=True)
                     args.palette[lab] = st.color_picker("", args.palette[lab], key=f"colorpicker-{lab}")
