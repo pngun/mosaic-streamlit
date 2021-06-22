@@ -21,7 +21,7 @@ class Render:
     def preprocess(self):
         args = self.arguments
         with st.sidebar.beta_expander("Preprocessing"):
-            interface.info(f"{len(args.ids)} features available")
+            interface.info(f"{len(args.ids)} amplicons available")
 
             form = st.form("Preprocessing form")
             args.min_cells = form.slider("Minimum cells with amplicon (%)", min_value=0, max_value=100, value=int(args.get("min_cells")))

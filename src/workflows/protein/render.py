@@ -21,7 +21,7 @@ class Render:
     def preprocess(self):
         args = self.arguments
         with st.sidebar.beta_expander("Preprocessing"):
-            interface.info(f"{len(args.ids)} features available")
+            interface.info(f"{len(args.ids)} antibodies available")
 
             form = st.form("Preprocessing form")
             args.drop_ids = form.multiselect("Antibodies to discard", args.ids, default=args.get("drop_ids"))
