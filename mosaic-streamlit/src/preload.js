@@ -29,7 +29,7 @@ window.addEventListener('DOMContentLoaded', () => {
     style.type = 'text/css';
     style.appendChild(document.createTextNode(css));
   }
-  addMontserratFont()
+  // addMontserratFont() - on hold
 })
 
 ipcRenderer.on('toggle-find', () => {
