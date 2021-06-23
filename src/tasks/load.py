@@ -1,3 +1,4 @@
+import os
 import time
 
 import missionbio.mosaic.io as mio
@@ -23,6 +24,11 @@ def render():
         cols = st.beta_columns([11])
         apply_filter = cols[0].checkbox("Load only pass-filter variants", value=True, key="Filter")
         file = st.file_uploader("Load an H5 file")
+
+        if os.getenv("MOSAIC_STREAMLIT_DEBUG") == "true":
+            button = st.button("Trigger Sentry error")
+            if button:
+                raise Exception("Sentry test error from Streamlit")
 
     return file, apply_filter
 
