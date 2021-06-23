@@ -22,7 +22,7 @@ class Render:
     def preprocess(self):
         args = self.arguments
         with st.sidebar.beta_expander("Preprocessing"):
-            interface.info(f"{len(args.ids)} variants available")
+            interface.info(f"{len(args.ids)} features available")
 
             form = st.form("Preprocessing form")
             args.dp = form.slider("Minimum read depth (DP)", min_value=0, max_value=100, value=int(args.get("dp")))
