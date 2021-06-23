@@ -204,7 +204,7 @@ class Render:
         with args.args_container:
             if kind == args.HEATMAP:
                 args.fig_attribute = st.selectbox("Attribute", args.LAYERS, key="Visualization Attribute")
-                args.splitby = st.selectbox("Split by", SPLITBY)
+                args.splitby = st.selectbox("Group by on Y-axis", SPLITBY)
                 args.orderby = st.selectbox("Order by", args.LAYERS, key="Visualization Orderby")
                 args.cluster_heatmap = st.checkbox("Cluster within labels", True)
                 args.convolve = st.slider("Smoothing", 0, 100)
@@ -213,7 +213,7 @@ class Render:
                 args.colorby = st.selectbox("Color by", COLORBY)
                 args.fig_features = None
                 if args.colorby not in SPLITBY + [args.DENSITY]:
-                    args.fig_features = st.multiselect("Features", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 4)])
+                    args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 4)])
                     if len(args.fig_features) == 0:
                         args.fig_features = None
 
@@ -226,16 +226,16 @@ class Render:
 
             elif kind == args.VIOLINPLOT:
                 args.fig_attribute = st.selectbox("Attribute", args.LAYERS)
-                args.splitby = st.selectbox("Split by", SPLITBY)
+                args.splitby = st.selectbox("Group by on Y-axis", SPLITBY)
                 args.points = st.checkbox("Box and points", False)
-                args.fig_features = st.multiselect("Features", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 2)])
+                args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 2)])
                 if len(args.fig_features) == 0:
                     args.fig_features = None
 
             elif kind == args.RIDGEPLOT:
                 args.fig_attribute = st.selectbox("Attribute", args.LAYERS)
-                args.splitby = st.selectbox("Split by", SPLITBY)
-                args.fig_features = st.multiselect("Features", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 4)])
+                args.splitby = st.selectbox("Group by on Y-axis", SPLITBY)
+                args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 4)])
                 if len(args.fig_features) == 0:
                     args.fig_features = None
 
