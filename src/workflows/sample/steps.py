@@ -26,7 +26,7 @@ class Steps:
         return True
 
     def run(self):
-        interface.subheader(f"Analysing sample")
+        interface.subheader(f"Analyzing sample")
 
         self.filter_labs()
         self.export()

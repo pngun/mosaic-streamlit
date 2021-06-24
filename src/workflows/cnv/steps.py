@@ -34,7 +34,7 @@ class Steps:
         return NORMALIZED_READS in ann.data.sample.cnv.layers
 
     def run(self):
-        interface.subheader(f"Analysing Genotype read counts")
+        interface.subheader(f"Analyzing Genotype read counts")
 
         self.annotations()
         self.preprocess()
