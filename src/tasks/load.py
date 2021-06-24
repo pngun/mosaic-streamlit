@@ -12,7 +12,8 @@ def run():
     file, apply_filter = render()
 
     if file is None:
-        interface.error("Please use the options available in the sidebar to load a sample.")
+        status = "Only 1 file can be analyzed at a time. Multiple files are not allowed.<br />Please pre-merge h5 files (for multi-sample, one-patient) prior to analysis."
+        interface.error("Please use the options available in the sidebar to load a sample.", status)
 
     sample = load(file, apply_filter)
 
