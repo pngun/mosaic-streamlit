@@ -1,7 +1,7 @@
 {
-  "name": "tapestri-insights",
-  "productName": "Tapestri Insights",
-  "version": "0.4.2",
+  "name": "tapestri-insights-v4",
+  "productName": "Tapestri Insights v4",
+  "version": "4.0.0-b1",
   "description": "Tapestri Insights v4.0 b1",
   "main": "./.webpack/main",
   "scripts": {
