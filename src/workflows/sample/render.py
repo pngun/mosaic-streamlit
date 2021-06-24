@@ -88,7 +88,7 @@ class Render:
         args = self.arguments
         kind = args.visual_type
 
-        ANALYTE_MAP = {"protein": "Protein", "dna": "DNA", "cnv": "CNV", None: None}
+        ANALYTE_MAP = {"protein": "Protein", "dna": "Genotype", "cnv": "CNV", None: None}
         available_assays = ann.data.available_assays().copy()
 
         with args.args_container:

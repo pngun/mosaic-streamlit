@@ -25,9 +25,9 @@ import interface  # noqa: E402
 from tasks import load, selection  # noqa: E402
 
 # -------- Sample selection
-st.set_page_config(page_title="Insights v4.0 (beta)", layout="wide")
+st.set_page_config(page_title="Tapestri Insights v4.0 b1", layout="wide")
 interface.init()
-interface.subheader("Insights v4.0 (beta)")
+interface.subheader("Tapestri Insights v4.0 b1")
 interface.status("Done.")
 
 sample = load.run()

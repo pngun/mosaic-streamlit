@@ -4,3 +4,5 @@ body {
   max-width: 38rem;
   padding: 2rem;
 }
+
+@import '~static/montserrat/index.css'

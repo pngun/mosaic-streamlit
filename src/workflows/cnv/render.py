@@ -95,15 +95,15 @@ class Render:
         with args.args_container:
             if kind == args.HEATMAP:
                 args.fig_attribute = st.selectbox("Attribute", args.LAYERS, key="Visualization Attribute")
-                args.splitby = st.selectbox("Split by", SPLITBY)
-                args.fig_features = st.selectbox("Features", args.FEATURES, key="Visualization features")
+                args.splitby = st.selectbox("Group by on Y-axis", SPLITBY)
+                args.fig_features = st.selectbox("Choose X-axis", args.FEATURES, key="Visualization features")
 
                 if args.fig_features == args.POSITIONS:
                     subfeats = sorted(list(set(assay.col_attrs[CHROM])))
                 elif args.fig_features == args.GENES:
                     subfeats = sorted(list(set(assay.col_attrs[GENE_NAME])))
 
-                args.select_features = st.multiselect("Sub features", subfeats, key="Visualization subfeatures")
+                args.select_features = st.multiselect("Filter X-axis data", subfeats, key="Visualization subfeatures")
                 args.cluster_heatmap = st.checkbox("Cluster within labels", True)
                 args.convolve = st.slider("Smoothing", 0, 100)
 

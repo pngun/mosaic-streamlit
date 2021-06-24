@@ -32,7 +32,7 @@ class Steps:
         return set(ann.data.sample.dna.get_labels()) != {"-"}
 
     def run(self):
-        interface.subheader(f"Analysing DNA variants")
+        interface.subheader(f"Analyzing Genotype variants")
 
         self.preprocess()
         self.prepare()

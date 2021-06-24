@@ -1,3 +1,4 @@
+const path = require('path')
 const webpack = require('webpack')
 const rules = require('./webpack.rules')
 
@@ -19,6 +20,10 @@ module.exports = {
     fallback: {
       "fs": false,
       "path": false,
+    },
+    alias: {
+      // for accessing static folder from inside stylesheets
+      static: path.resolve(__dirname, 'src/static')
     }
   },
   externals: {

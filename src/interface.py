@@ -43,7 +43,7 @@ def warning(msg):
     st.markdown(f'<p class="error-font">{msg}</p>', unsafe_allow_html=True)
 
 
-def error(msg):
+def error(msg, status_text=None):
     error_style = """
     <style>
     .error-font {
@@ -58,7 +58,10 @@ def error(msg):
     st.markdown(error_style, unsafe_allow_html=True)
     SUBHEADER.markdown(f'<p class="error-font">{msg}</p>', unsafe_allow_html=True)
 
-    status("Done.")
+    if status_text:
+        STATUS.markdown(status_text, unsafe_allow_html=True)
+    else:
+        status("Done.")
 
     st.stop()
 

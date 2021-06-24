@@ -26,7 +26,7 @@ class Arguments(ArgumentsHandler):
         super().__init__("cnv")
 
     def constants(self):
-        self.DNA_LABEL = "DNA Label"
+        self.DNA_LABEL = "Genotype Clone"
 
     def preprocess(self):
         self.ids = list(ann.data.sample.cnv.ids())

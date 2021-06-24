@@ -1,3 +1,4 @@
+import os
 import time
 
 import missionbio.mosaic.io as mio
@@ -11,7 +12,8 @@ def run():
     file, apply_filter = render()
 
     if file is None:
-        interface.error("Please use the options available in the sidebar to load a sample.")
+        status = "Only 1 file can be analyzed at a time. Multiple files are not allowed.<br />Please pre-merge h5 files (for multi-sample, one-patient) prior to analysis."
+        interface.error("Please use the options available in the sidebar to load a sample.", status)
 
     sample = load(file, apply_filter)
 
@@ -20,13 +22,14 @@ def run():
 
 def render():
     with st.sidebar:
-        cols = st.beta_columns([1, 10])
-
-        apply_filter = cols[0].checkbox("", key="Filter")
-
-        msg = "Load *only* those variants that pass minimum filters."
-        cols[1].caption(msg)
+        cols = st.beta_columns([11])
+        apply_filter = cols[0].checkbox("Load only pass-filter variants", value=True, key="Filter")
         file = st.file_uploader("Load an H5 file")
+
+        if os.getenv("MOSAIC_STREAMLIT_DEBUG") == "true":
+            button = st.button("Trigger Sentry error")
+            if button:
+                raise Exception("Sentry test error from Streamlit")
 
     return file, apply_filter
 

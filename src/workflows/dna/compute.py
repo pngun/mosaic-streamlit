@@ -16,7 +16,7 @@ class Compute:
 
     def preprocess(self):
         args = self.arguments
-        interface.status("Processing DNA assay.")
+        interface.status("Processing Genotype assay.")
 
         ann.data.sample.reset("dna")
 
@@ -40,7 +40,7 @@ class Compute:
         missing_variants = ~np.isin(variants, args.annotations[args.VARIANT])
 
         if missing_variants.any():
-            interface.status("Fetching DNA annotations")
+            interface.status("Fetching Genotype annotations")
 
             variants = variants[missing_variants]
             renamed_variants = np.array([var.replace(":", "-").replace("/", "-") for var in variants], dtype="str")
@@ -75,7 +75,7 @@ class Compute:
         args = self.arguments
         assay = ann.data.sample.dna
 
-        interface.status(f"Preparing DNA variants data.")
+        interface.status(f"Preparing Genotype variants data.")
 
         assay.scale_data(args.scale_attribute)
         assay.run_pca(args.pca_attribute, components=args.pca_comps)
@@ -85,7 +85,7 @@ class Compute:
         args = self.arguments
         assay = ann.data.sample.dna
 
-        interface.status(f"Clustering DNA variants data.")
+        interface.status(f"Clustering Genotype variants data.")
 
         kwargs = {"dbscan": {"eps": args.eps}, "hdbscan": {"min_cluster_size": args.min_cluster_size}, "graph-community": {"k": args.k}, "kmeans": {"n_clusters": args.n_clusters}}
 

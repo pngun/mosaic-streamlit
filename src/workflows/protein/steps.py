@@ -34,7 +34,7 @@ class Steps:
         return NORMALIZED_READS in ann.data.sample.protein.layers
 
     def run(self):
-        interface.subheader(f"Analysing protein read counts")
+        interface.subheader(f"Analyzing protein read counts")
 
         self.preprocess()
         self.prepare()

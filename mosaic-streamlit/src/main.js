@@ -6,7 +6,7 @@ import settings from 'electron-settings'
 import setupSentry from './sentry'
 
 settings.get('sentry.enabled').then((value) => {
-  if(value !== false) {
+  if(value !== false && process.env.MOSAIC_STREAMLIT_SENTRY_ENABLED !== 'false') {
     setupSentry()
   }
 })

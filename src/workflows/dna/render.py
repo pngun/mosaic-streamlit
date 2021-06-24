@@ -27,7 +27,7 @@ class Render:
             form = st.form("Preprocessing form")
             args.dp = form.slider("Minimum read depth (DP)", min_value=0, max_value=100, value=int(args.get("dp")))
             args.gq = form.slider("Minimum genotype quality (GQ)", min_value=0, max_value=100, value=int(args.get("gq")))
-            args.af = form.slider("Minimum allele frequency (VAF)", min_value=0, max_value=100, value=int(args.get("af")))
+            args.af = form.slider("Minimum mutant allele frequency (AF)", min_value=0, max_value=100, value=int(args.get("af")))
             args.std = form.slider("Minimum standard deviation of AF", min_value=0, max_value=100, value=int(args.get("std")))
 
             args.drop_ids = form.multiselect("Variants to discard", args.ids, default=args.get("drop_ids"))
@@ -123,7 +123,7 @@ class Render:
             for lab in lab_set:
                 col1, col2, col3 = st.beta_columns([0.9, 0.15, 0.15])
                 with col1:
-                    new_name = st.text_input(f"Give a new name to {lab}", lab)
+                    new_name = st.text_input(f"Rename Cluster {lab}", lab)
                 with col2:
                     st.markdown(f"<p style='margin-bottom:34px'></p>", unsafe_allow_html=True)
                     args.palette[lab] = st.color_picker("", args.palette[lab], key=f"colorpicker-{lab}")
@@ -140,7 +140,7 @@ class Render:
                     del args.palette[lab]
 
             st.caption("---")
-            interface.info("Format of the id names")
+            interface.info("X-axis labels")
             args.id_format = st.multiselect("Annotation Order", [args.VARIANT] + args.annot_types, default=args.get("id_format"))
 
         if len(args.keep_labs) == 0:
@@ -188,7 +188,7 @@ class Render:
         with args.args_container:
             if kind == args.HEATMAP:
                 args.fig_attribute = st.selectbox("Attribute", args.LAYERS, key="Visualization Attribute")
-                args.splitby = st.selectbox("Split by", SPLITBY)
+                args.splitby = st.selectbox("Group by on Y-axis", SPLITBY)
                 args.orderby = st.selectbox("Order by", args.LAYERS, key="Visualization Orderby")
                 args.cluster_heatmap = st.checkbox("Cluster within labels", True)
                 args.convolve = st.slider("Smoothing", 0, 100)
@@ -197,29 +197,29 @@ class Render:
                 args.colorby = st.selectbox("Color by", COLORBY)
                 args.fig_features = None
                 if args.colorby not in SPLITBY + [args.DENSITY]:
-                    args.fig_features = st.multiselect("Features", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 4)])
+                    args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 4)])
                     if len(args.fig_features) == 0:
                         args.fig_features = None
 
             elif kind == args.VIOLINPLOT:
                 args.fig_attribute = st.selectbox("Attribute", args.LAYERS)
-                args.splitby = st.selectbox("Split by", SPLITBY)
-                args.points = st.checkbox("Box and points", False)
-                args.fig_features = st.multiselect("Features", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 2)])
+                args.splitby = st.selectbox("Group by on Y-axis", SPLITBY)
+                args.points = st.checkbox("Box plot and points", False)
+                args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 2)])
                 if len(args.fig_features) == 0:
                     args.fig_features = None
 
             elif kind == args.RIDGEPLOT:
                 args.fig_attribute = st.selectbox("Attribute", args.LAYERS)
-                args.splitby = st.selectbox("Split by", SPLITBY)
-                args.fig_features = st.multiselect("Features", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 4)])
+                args.splitby = st.selectbox("Group by on Y-axis", SPLITBY)
+                args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 4)])
                 if len(args.fig_features) == 0:
                     args.fig_features = None
 
             elif kind == args.STRIPPLOT:
                 args.fig_attribute = st.selectbox("Attribute", args.LAYERS)
                 args.colorby = st.selectbox("Colorby", args.LAYERS)
-                args.fig_features = st.multiselect("Features", list(assay.ids()))
+                args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()))
                 if len(args.fig_features) == 0:
                     args.fig_features = None
 

@@ -37,7 +37,9 @@ const Settings = () => {
         {Input}&nbsp;Allow sending technical errors to the remote server
       </p>
       <p style={{ color: 'red' }}>
-        <strong>Note: The changes will be applied the next time you start the application.</strong>
+          <strong>
+          Note: If you do not wish to send technical error data to the remote server, please deselect the checkbox above and relaunch the application.
+          </strong>
       </p>
     </div>
   )

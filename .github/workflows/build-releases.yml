@@ -38,29 +38,29 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: mosaic-streamlit-${{ env.PRODUCT_OS_AND_VERSION }}.zip
+          name: tapestri-insights-v4-${{ env.PRODUCT_OS_AND_VERSION }}.zip
           path: ${{ github.workspace }}/release.zip
           if-no-files-found: ignore
         if: ${{ env.SYSTEM_NAME == 'linux' }}
 
-      - run: mv release.dmg mosaic-streamlit-${{ env.PRODUCT_OS_AND_VERSION }}.dmg
+      - run: mv release.dmg tapestri-insights-v4-${{ env.PRODUCT_OS_AND_VERSION }}.dmg
         shell: bash
         if: ${{ env.SYSTEM_NAME == 'macos' }}
 
-      - run: mv release.exe mosaic-streamlit-${{ env.PRODUCT_OS_AND_VERSION }}.exe
+      - run: mv release.exe tapestri-insights-v4-${{ env.PRODUCT_OS_AND_VERSION }}.exe
         shell: bash
         if: ${{ env.SYSTEM_NAME == 'windows' }}
 
       - uses: actions/upload-artifact@v2
         with:
-          name: mosaic-streamlit-${{ env.PRODUCT_OS_AND_VERSION }}.dmg
-          path: ${{ github.workspace }}/mosaic-streamlit-${{ env.PRODUCT_OS_AND_VERSION }}.dmg
+          name: tapestri-insights-v4-${{ env.PRODUCT_OS_AND_VERSION }}.dmg
+          path: ${{ github.workspace }}/tapestri-insights-v4-${{ env.PRODUCT_OS_AND_VERSION }}.dmg
           if-no-files-found: ignore
         if: ${{ env.SYSTEM_NAME == 'macos' }}
 
       - uses: actions/upload-artifact@v2
         with:
-          name: mosaic-streamlit-${{ env.PRODUCT_OS_AND_VERSION }}.exe
-          path: ${{ github.workspace }}/mosaic-streamlit-${{ env.PRODUCT_OS_AND_VERSION }}.exe
+          name: tapestri-insights-v4-${{ env.PRODUCT_OS_AND_VERSION }}.exe
+          path: ${{ github.workspace }}/tapestri-insights-v4-${{ env.PRODUCT_OS_AND_VERSION }}.exe
           if-no-files-found: ignore
         if: ${{ env.SYSTEM_NAME == 'windows' }}

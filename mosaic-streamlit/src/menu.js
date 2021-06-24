@@ -1,6 +1,5 @@
 import { Menu } from 'electron'
-import { createAnotherWindow, settingsWindow } from './main_window'
-import createAboutWindow from './about'
+import { createAnotherWindow, settingsWindow, aboutWindow } from './main_window'
 
 
 const setApplicationMenu = (mainWindow) => {
@@ -14,7 +13,7 @@ const setApplicationMenu = (mainWindow) => {
           mainWindow.webContents.send('toggle-find')
         }
       },
-      { label: 'About', click: () => { createAboutWindow(mainWindow) } },
+      { label: 'About', click: () => { aboutWindow(mainWindow) } },
       { label: 'Settings', click: () => { settingsWindow(mainWindow) } },
       { label: 'Quit', role: 'quit' },
     ]},
