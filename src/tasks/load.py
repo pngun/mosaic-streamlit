@@ -1,15 +1,15 @@
 import os
-import time
 import tempfile
+import time
 
 import missionbio.mosaic.io as mio
 import numpy as np
 import streamlit as st
-
 from missionbio.h5.data.reader import H5Reader
-from whitelist_import.columns import CHROM, POS, REF, ALT
-from whitelist_import.bed_reader import BedReader
+
 import interface
+from whitelist_import.bed_reader import BedReader
+from whitelist_import.columns import ALT, CHROM, POS, REF
 
 
 def run():
@@ -41,8 +41,8 @@ def render():
 
 def load_whitelist_from_file(fp):
     with tempfile.TemporaryDirectory() as td:
-        tmp_path = td + '/' + fp.name
-        with open(tmp_path, 'wb') as tf:
+        tmp_path = td + "/" + fp.name
+        with open(tmp_path, "wb") as tf:
             tf.write(fp.read())
         return BedReader().read(tmp_path)
 
@@ -52,19 +52,19 @@ def load(file, apply_filter, whitelist_file):
     interface.status("Reading h5 file.")
 
     def _variant_to_dict(s):
-        data = s.split(':')
+        data = s.split(":")
         chrom = data[0]
-        if chrom.startswith('chr'):
+        if chrom.startswith("chr"):
             chrom = chrom[3:]
         pos = int(data[1])
-        ref, alt = data[2].split('/')
+        ref, alt = data[2].split("/")
         return {CHROM: chrom, POS: pos, REF: ref, ALT: alt}
 
     if whitelist_file:
         whitelist = load_whitelist_from_file(whitelist_file)
         with H5Reader(file) as reader:
             whitelist_variants = []
-            variants = reader.read_col('dna_variants', 'id')
+            variants = reader.read_col("dna_variants", "id")
             for v in variants:
                 wl_filter = whitelist.filter_variants
                 if wl_filter(_variant_to_dict(v)):

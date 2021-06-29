@@ -1,4 +1,3 @@
-
 # Names of common columns in Insights generated DataFrames
 SAMPLE = "Sample"
 SUBCLONE = "Subclone"

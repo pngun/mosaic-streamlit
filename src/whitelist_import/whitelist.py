@@ -1,12 +1,13 @@
 import pandas as pd
 
-from .columns import CHROM, POS, REF, ALT, START, END, ALLELE_INFO
+from .columns import ALLELE_INFO, ALT, CHROM, END, POS, REF, START
 
 __all__ = ["Whitelist"]
 
 
 class Whitelist(pd.DataFrame):
     """Container for .bed file whitelist"""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         assert CHROM in self.columns
@@ -34,25 +35,24 @@ class Whitelist(pd.DataFrame):
             self[ALT] = None
 
     @staticmethod
-    def read(filename: str) -> 'Whitelist':
+    def read(filename: str) -> "Whitelist":
         """Read whitelist from a bedfile
 
-        Parameters
-        ----------
-        filename: str
-            path to the bed file to read
+        Args:
+            filename: str
+                path to the bed file to read
 
-        Returns
-        -------
-        Whitelist
+        Returns:
+            Whitelist
         """
         from missionbio.insights.data import BedReader
+
         return BedReader().read(filename)
 
     @property
     def filter_variants(self):
         """A filter function for an SNP DataFrame"""
-        low = self[START].values
+        low = self[START].values  # noqa
         high = self[END].values
         chr = self[CHROM].values
 
@@ -64,8 +64,6 @@ class Whitelist(pd.DataFrame):
             allele_info = ref = alt = None
 
         def whitelisted(v):
-            return ((chr == v[CHROM]) &
-                    (low <= v[POS]) & (high >= v[POS]) &
-                    ((allele_info == None) | ((v[REF] == ref) & (v[ALT] == alt)))  # noqa: E711
-                    ).any()
+            return ((chr == v[CHROM]) & (low <= v[POS]) & (high >= v[POS]) & ((allele_info == None) | ((v[REF] == ref) & (v[ALT] == alt)))).any()  # noqa: E711
+
         return whitelisted
