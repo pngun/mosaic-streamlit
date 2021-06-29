@@ -105,8 +105,8 @@ wcwidth==0.2.5
 webencodings==0.5.1
 widgetsnbextension==3.5.1
 
-https://dl.missionbio.io/pkgs/missionbio.h5-3.2.0-py3-none-any.whl
-https://dl.missionbio.io/pkgs/missionbio.mosaic-1.6.1-py3-none-any.whl
+https://dl.missionbio.io/pkgs/missionbio.h5-3.4.2-py3-none-any.whl
+https://dl.missionbio.io/pkgs/missionbio.mosaic-1.6.2-py3-none-any.whl
 
 black==20.8b1
 darglint==1.8.0
