@@ -96,7 +96,14 @@ class Compute:
             assay.cluster(method=args.method, attribute=args.cluster_attribute, **kwargs[args.method])
             assay.cluster_cleanup(AF_MISSING, args.similarity)
         elif args.method == "count":
-            df = assay.count(layer=args.layer, min_clone_size=args.min_clone_size, group_missing=args.group_missing, ignore_zygosity=args.ignore_zygosity, features=args.features)
+            try:
+                df = assay.count(layer=args.layer, min_clone_size=args.min_clone_size, group_missing=args.group_missing, ignore_zygosity=args.ignore_zygosity, features=args.features)
+            except ValueError as ex:
+                ex_message = str(ex)
+                if ex_message == "At least on feature is needed to cluster.":
+                    interface.error("Please select at least one variant to cluster")
+                else:
+                    raise ex
 
             if df is not None:
                 lab_map = {}
