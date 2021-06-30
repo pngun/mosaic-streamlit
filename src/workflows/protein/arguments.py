@@ -27,7 +27,7 @@ class Arguments(ArgumentsHandler):
 
     def general_constants(self):
         self.PROTEIN_LABEL = "Protein Label"
-        self.DENSITY = "Density"
+        self.DENSITY = "density"
 
     def preprocess(self):
         self.drop_ids = []
