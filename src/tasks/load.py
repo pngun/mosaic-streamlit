@@ -69,10 +69,10 @@ def load(file, apply_filter, whitelist_file):
                 wl_filter = whitelist.filter_variants
                 if wl_filter(_variant_to_dict(v)):
                     whitelist_variants.append(v)
-        sample = mio.load(file, whitelist=whitelist_variants)
     else:
-        sample = mio.load(file, apply_filter=apply_filter)
+        whitelist_variants = None
 
+    sample = mio.load(file, apply_filter=apply_filter, whitelist=whitelist_variants)
     sample.load_time = str(time.time())
 
     if sample.protein is not None:
