@@ -1,9 +1,13 @@
 # FIXME: setup Sentry for all builds until we figure out what we need
+import atexit
 import sys
 
 from sentry_sdk import capture_exception
 
+from segment import track
 from sentry import setup_sentry
+
+atexit.register(lambda: track("Application Closed"))
 
 setup_sentry()
 
@@ -29,6 +33,8 @@ st.set_page_config(page_title="Tapestri Insights v4.0 b1", layout="wide")
 interface.init()
 interface.subheader("Tapestri Insights v4.0 b1")
 interface.status("Done.")
+
+track("Application Launched")
 
 sample = load.run()
 
