@@ -102,13 +102,13 @@ class Compute:
 
             for assay_name in check_assays:
                 if assay_name not in available_assays or not ann.data.is_analyzed(assay_name):
-                    interface.error(f"Execution of the {assay_name} workflow is required to create this multiomic plot.")
+                    interface.error(f"Execution of the {assay_name} workflow is required to create this multi-omic plot.")
 
             args.fig = ann.cached_func(sample.heatmap, sample, clusterby=args.clusterby, sortby=args.sortby, drop=args.drop, flatten=False)
 
         if kind == args.DNA_ANALYTE_PLOT:
 
             if args.analyte not in available_assays or not ann.data.is_analyzed(args.analyte):
-                interface.error(f"Execution of the {args.analyte} workflow is required to create this multiomic plot.")
+                interface.error(f"Execution of the {args.analyte} workflow is required to create this multi-omic plot.")
 
             sample.clone_vs_analyte(args.analyte)
