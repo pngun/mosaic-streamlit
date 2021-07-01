@@ -3,8 +3,7 @@ import uuid
 
 import analytics
 
-
-analytics.write_key = 'qmnxrkhf17A0cNnXkwSf0ZnoJKcjzeZ7'  # dev
+analytics.write_key = "qmnxrkhf17A0cNnXkwSf0ZnoJKcjzeZ7"  # dev
 analytics.debug = True
 analytics.on_error = print
 
@@ -25,8 +24,8 @@ def get_context():
     if context is None:
         context = {
             "app": {
-                "name": 'Insights v4',
-                "version": '4.0.0-b1',
+                "name": "Insights v4",
+                "version": "4.0.0-b1",
             }
         }
     return context
@@ -41,9 +40,4 @@ def get_session():
 
 def track(event, **details):
     details["session_id"] = get_session()
-    analytics.track(
-        anonymous_id=get_user_id(),
-        event=event,
-        properties=details,
-        context=get_context()
-    )
+    analytics.track(anonymous_id=get_user_id(), event=event, properties=details, context=get_context())
