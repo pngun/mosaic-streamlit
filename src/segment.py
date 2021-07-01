@@ -6,6 +6,7 @@ import analytics
 analytics.write_key = "qmnxrkhf17A0cNnXkwSf0ZnoJKcjzeZ7"  # dev
 analytics.debug = True
 analytics.on_error = print
+analytics.sync_mode = True
 
 user_id = None
 context = None
