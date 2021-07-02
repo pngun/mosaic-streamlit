@@ -1,4 +1,5 @@
 import interface
+from segment import track
 
 from .arguments import Arguments
 from .compute import Compute
@@ -27,12 +28,14 @@ class Steps:
 
     def run(self):
         interface.subheader(f"Analyzing sample")
+        track(f"Analyzing sample")
 
         self.filter_labs()
         self.export()
         self.visual()
 
         interface.status("Done.")
+        track(f"Analyzing sample - Done")
 
     def filter_labs(self):
         self.render.filter_labs()

@@ -1,5 +1,6 @@
 import interface
 import workflows.general.analysis as ann
+from segment import track
 
 from .arguments import Arguments
 from .compute import Compute
@@ -33,6 +34,7 @@ class Steps:
 
     def run(self):
         interface.subheader(f"Analyzing Genotype variants")
+        track("Analyzing Genotype variants")
 
         self.preprocess()
         self.prepare()
@@ -44,6 +46,7 @@ class Steps:
         self.firstpass = False
 
         interface.status("Done.")
+        track("Analyzing Genotype variants - Done")
 
     def preprocess(self):
         clicked = self.render.preprocess()

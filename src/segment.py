@@ -1,9 +1,13 @@
+import os
 import time
 import uuid
 
 import analytics
+from requests.exceptions import ConnectionError
 
-analytics.write_key = "qmnxrkhf17A0cNnXkwSf0ZnoJKcjzeZ7"  # dev
+SEGMENT_ENABLED = os.getenv("MOSAIC_STREAMLIT_SEGMENT_ENABLED", "false") == "true"
+if SEGMENT_ENABLED:
+    analytics.write_key = "qmnxrkhf17A0cNnXkwSf0ZnoJKcjzeZ7"  # dev
 analytics.debug = True
 analytics.on_error = print
 analytics.sync_mode = True
@@ -39,6 +43,22 @@ def get_session():
     return session
 
 
+# FIXME: streamlit needs a standard lifecycle events which currently don't exist
+_track_only_once = ["Application Launched", "Application Closed"]
+_already_tracked_events = []
+
+
 def track(event, **details):
+    if not SEGMENT_ENABLED:
+        return
+
+    if event in _track_only_once and event in _already_tracked_events:
+        return
+
+    _already_tracked_events.append(event)
     details["session_id"] = get_session()
-    analytics.track(anonymous_id=get_user_id(), event=event, properties=details, context=get_context())
+    try:
+        analytics.track(anonymous_id=get_user_id(), event=event, properties=details, context=get_context())
+    except ConnectionError:
+        # required for offline mode
+        pass

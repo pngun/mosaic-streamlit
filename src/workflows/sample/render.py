@@ -4,6 +4,7 @@ from missionbio.h5.constants import SAMPLE
 
 import interface
 import workflows.general.analysis as ann
+from segment import track
 
 
 class Render:
@@ -74,7 +75,9 @@ class Render:
             with columns[i + 2]:
                 clicked = st.button(options[i], key=f"visual-{options[i]}")
                 if clicked:
-                    args.visual_type = options[i]
+                    kind = options[i]
+                    track(f"Plot {kind} clicked")
+                    args.visual_type = kind
 
         columns = st.beta_columns([0.75, 0.1, 2])
         with columns[0]:

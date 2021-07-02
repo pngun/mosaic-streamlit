@@ -17,7 +17,8 @@ const run_on_win = (sentry_enabled) => {
       shell: false,
       env: {
         MOSAIC_STREAMLIT_GUI_RUNNING: 'true',
-        MOSAIC_STREAMLIT_SENTRY_ENABLED: isSentryEnabled
+        MOSAIC_STREAMLIT_SENTRY_ENABLED: isSentryEnabled,
+        MOSAIC_STREAMLIT_SEGMENT_ENABLED: 'true'
       }
     }
   )
@@ -40,7 +41,8 @@ const run_on_mac = (sentry_enabled) => {
       env: {
         LC_ALL: 'en_US.UTF-8',
         MOSAIC_STREAMLIT_GUI_RUNNING: 'true',
-        MOSAIC_STREAMLIT_SENTRY_ENABLED: isSentryEnabled
+        MOSAIC_STREAMLIT_SENTRY_ENABLED: isSentryEnabled,
+        MOSAIC_STREAMLIT_SEGMENT_ENABLED: 'true'
       }
     }
   )
@@ -49,11 +51,12 @@ const run_on_mac = (sentry_enabled) => {
 }
 
 const run_on_linux = () => {
+  // only for development
   const cwd = path.join(__dirname, '../../..')
   console.log('linux cwd', cwd)
   const runtime = childProcess.spawn(
     "/bin/bash",
-    ["-c", "./venv-linux/bin/streamlit run src/app.py --server.port=10000"],
+    ["-c", "./venv/bin/streamlit run src/app.py --server.port=10000"],
     {
       cwd: cwd,
       detached: true,
