@@ -4,6 +4,7 @@ from missionbio.mosaic.constants import PCA_LABEL, SCALED_LABEL, UMAP_LABEL
 
 import interface
 import workflows.general.analysis as ann
+from segment import track
 
 
 class Render:
@@ -182,6 +183,7 @@ class Render:
                 clicked = st.button(options[i], key=f"visual-{options[i]}")
                 if clicked:
                     kind = options[i]
+                    track(f"Plot {kind} clicked")
                     args.visual_type = kind
 
         columns = st.beta_columns([0.75, 0.1, 2])

@@ -2,6 +2,7 @@ from missionbio.mosaic.constants import NORMALIZED_READS
 
 import interface
 import workflows.general.analysis as ann
+from segment import track
 
 from .arguments import Arguments
 from .compute import Compute
@@ -35,6 +36,7 @@ class Steps:
 
     def run(self):
         interface.subheader(f"Analyzing protein read counts")
+        track(f"Analyzing protein read counts")
 
         self.preprocess()
         self.prepare()
@@ -46,6 +48,7 @@ class Steps:
         self.firstpass = False
 
         interface.status("Done.")
+        track(f"Analyzing protein read counts - Done")
 
     def preprocess(self):
         clicked = self.render.preprocess()
