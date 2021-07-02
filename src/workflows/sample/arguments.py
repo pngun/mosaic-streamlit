@@ -37,11 +37,11 @@ class Arguments(ArgumentsHandler):
 
         self.FISHPLOT = "Fishplot"
         self.BARPLOT = "Barplot"
-        self.HEATMAP = "Multi-omic Heatmap"
+        self.HEATMAP = "Multi-omics Heatmap"
         self.DNA_ANALYTE_PLOT = "Genotype vs Analyte"
 
         self.MULTISAMPLE = "Multisample"
-        self.MULTIOMIC = "Multi-omic"
+        self.MULTIOMIC = "Multi-omics"
 
         self.visual_type = self.FISHPLOT
         self.category = self.MULTISAMPLE
