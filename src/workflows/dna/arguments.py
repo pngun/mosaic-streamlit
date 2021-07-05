@@ -55,7 +55,7 @@ class Arguments(ArgumentsHandler):
         self.dp = 10
         self.gq = 30
         self.af = 20
-        self.std = 20
+        self.std = 0
 
         self.drop_ids = []
         self.keep_ids = []
