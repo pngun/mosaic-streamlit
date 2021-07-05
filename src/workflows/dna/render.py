@@ -34,10 +34,10 @@ class Render:
             args.drop_ids = form.multiselect("Variants to discard", args.ids, default=args.get("drop_ids"))
             args.keep_ids = form.multiselect("Variants to keep", args.ids, default=args.get("keep_ids"))
 
+            clicked = form.form_submit_button("Process")
+
             if len(args.keep_ids) != 0 and len(args.drop_ids) != 0:
                 interface.error("Cannot keep and drop variants both. Choose only one of the options")
-
-            clicked = form.form_submit_button("Process")
 
             return clicked
 
