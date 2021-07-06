@@ -96,10 +96,13 @@ class Render:
                 args.cluster_attribute = form.selectbox("Attribute", [UMAP_LABEL, PCA_LABEL, AF_MISSING], key="Prepare Attribute", index=2)
                 cluster_attr = form.slider(*CLUSTER_OPTIONS[args.method][:-1])
                 setattr(args, CLUSTER_OPTIONS[args.method][-1], cluster_attr)
-                args.similarity = form.slider("Similarity", 0.0, 1.0, 0.8)
 
-                description = f"{args.method} on {args.cluster_attribute} with {CLUSTER_OPTIONS[args.method][0].lower()} "
-                description += f"set to {cluster_attr} with {args.similarity} similarity"
+                description = f"{args.method} on {args.cluster_attribute} with {CLUSTER_OPTIONS[args.method][0].lower()} set to {cluster_attr}"
+
+                if args.method != "kmeans":
+                    args.similarity = form.slider("Similarity", 0.0, 1.0, 0.8)
+                    description += f" with {args.similarity} similarity"
+
                 args.cluster_description = description
 
             clicked = form.form_submit_button("Cluster")

@@ -110,7 +110,10 @@ class Compute:
                 interface.error(f"{args.cluster_attribute} has not yet been set.")
 
             assay.cluster(method=args.method, attribute=args.cluster_attribute, **kwargs[args.method])
-            assay.cluster_cleanup(AF_MISSING, args.similarity)
+
+            if args.method != "kmeans":
+                assay.cluster_cleanup(AF_MISSING, args.similarity)
+
         elif args.method == "count":
             try:
                 df = assay.count(layer=args.layer, min_clone_size=args.min_clone_size, group_missing=args.group_missing, ignore_zygosity=args.ignore_zygosity, features=args.features)
