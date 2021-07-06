@@ -6,6 +6,7 @@ from missionbio.mosaic.constants import AF_MISSING, NGT_FILTERED, UMAP_LABEL
 
 import interface
 import workflows.general.analysis as ann
+from whitelist_import.columns import WHITELIST
 
 
 class Compute:
@@ -20,17 +21,32 @@ class Compute:
 
         ann.data.sample.reset("dna")
 
+        whitelisted = ann.data.sample.dna.col_attrs[WHITELIST]
+        white_vars = ann.data.sample.dna.ids()[whitelisted]
+
+        if set(white_vars) & set(args.drop_ids) != set():
+            interface.error("Cannot drop a whitelist variant.")
+
         if len(args.keep_ids) == 0:
-            dna_vars = ann.data.sample.dna.filter_variants(min_dp=args.dp, min_gq=args.gq, min_vaf=args.af, min_std=args.std)
-            if len(args.drop_ids) > 0:
-                dna_vars = list(set(dna_vars) - set(args.drop_ids))
+            passed_vars = ann.data.sample.dna.filter_variants(min_dp=args.dp, min_gq=args.gq, min_vaf=args.af, min_std=args.std)
+            dna_vars = set(passed_vars) - set(args.drop_ids)
         else:
-            dna_vars = args.keep_ids
+            dna_vars = set(args.keep_ids)
+
+        # Do not filter the whitelisted variants
+        dna_vars = dna_vars | set(white_vars)
 
         if len(dna_vars) == 0:
             interface.error("No variants found. Adjust the filters and process again.")
 
-        ann.data.sample.dna = ann.data.sample.dna[:, dna_vars]
+        ann.data.sample.dna = ann.data.sample.dna[:, list(dna_vars)]
+
+        # No filtering should be applied for the whitelisted variants
+        ngt = ann.data.sample.dna.layers[NGT].copy()
+        whitelisted = ann.data.sample.dna.col_attrs[WHITELIST]
+        whitelisted_ngt = ann.data.sample.dna.layers[NGT_FILTERED].copy()
+        whitelisted_ngt[:, whitelisted] = ngt[:, whitelisted]
+        ann.data.sample.dna.add_layer(NGT_FILTERED, whitelisted_ngt)
 
     def annotations(self):
         args = self.arguments
