@@ -6,6 +6,7 @@ from missionbio.mosaic.constants import AF_MISSING, NGT_FILTERED, UMAP_LABEL
 
 import interface
 import workflows.general.analysis as ann
+from whitelist_import.columns import WHITELIST
 
 
 class Compute:
@@ -20,17 +21,32 @@ class Compute:
 
         ann.data.sample.reset("dna")
 
+        whitelisted = ann.data.sample.dna.col_attrs[WHITELIST]
+        white_vars = ann.data.sample.dna.ids()[whitelisted]
+
+        if set(white_vars) & set(args.drop_ids) != set():
+            interface.error("Cannot drop a whitelist variant.")
+
         if len(args.keep_ids) == 0:
-            dna_vars = ann.data.sample.dna.filter_variants(min_dp=args.dp, min_gq=args.gq, min_vaf=args.af, min_std=args.std)
-            if len(args.drop_ids) > 0:
-                dna_vars = list(set(dna_vars) - set(args.drop_ids))
+            passed_vars = ann.data.sample.dna.filter_variants(min_dp=args.dp, min_gq=args.gq, min_vaf=args.af, min_std=args.std, min_prct_cells=args.prct, min_mut_prct_cells=args.mut_prct)
+            dna_vars = set(passed_vars) - set(args.drop_ids)
         else:
-            dna_vars = args.keep_ids
+            dna_vars = set(args.keep_ids)
+
+        # Do not filter the whitelisted variants
+        dna_vars = dna_vars | set(white_vars)
 
         if len(dna_vars) == 0:
             interface.error("No variants found. Adjust the filters and process again.")
 
-        ann.data.sample.dna = ann.data.sample.dna[:, dna_vars]
+        ann.data.sample.dna = ann.data.sample.dna[:, list(dna_vars)]
+
+        # No filtering should be applied for the whitelisted variants
+        ngt = ann.data.sample.dna.layers[NGT].copy()
+        whitelisted = ann.data.sample.dna.col_attrs[WHITELIST]
+        whitelisted_ngt = ann.data.sample.dna.layers[NGT_FILTERED].copy()
+        whitelisted_ngt[:, whitelisted] = ngt[:, whitelisted]
+        ann.data.sample.dna.add_layer(NGT_FILTERED, whitelisted_ngt)
 
     def annotations(self):
         args = self.arguments
@@ -94,7 +110,12 @@ class Compute:
                 interface.error(f"{args.cluster_attribute} has not yet been set.")
 
             assay.cluster(method=args.method, attribute=args.cluster_attribute, **kwargs[args.method])
-            assay.cluster_cleanup(AF_MISSING, args.similarity)
+
+            if args.method != "kmeans":
+                assay.cluster_cleanup(AF_MISSING, args.similarity)
+
+            args.heatmap_highlights = []
+
         elif args.method == "count":
             try:
                 df = assay.count(layer=args.layer, min_clone_size=args.min_clone_size, group_missing=args.group_missing, ignore_zygosity=args.ignore_zygosity, features=args.features)
@@ -113,6 +134,8 @@ class Compute:
                         new_name = f"{clone} ({score:.2f})"
                         lab_map[str(clone)] = new_name
                 assay.rename_labels(lab_map)
+
+            args.heatmap_highlights = args.features
 
         ann.data.add_label(assay, args.DNA_LABEL)
 
@@ -153,19 +176,29 @@ class Compute:
         assay = args.subassay
 
         # Adding cluster information
-        med_af, _, _, _ = assay.feature_signature(AF_MISSING)
-        med_af = med_af.astype(int).astype(str)
+        ngt = assay.get_attribute(NGT_FILTERED, constraint="row+col")
+        mutated = ((ngt == 2) + (ngt == 1)).sum(axis=0)
+        per_mutated = mutated.astype(str) + " (" + (100 * mutated / ngt.shape[0]).astype(int).astype(str) + "%)"
+        genotyped = ngt.shape[0] - (ngt == 3).sum(axis=0)
+        per_genotyped = genotyped.astype(str) + " (" + (100 * genotyped / ngt.shape[0]).astype(int).astype(str) + "%)"
+
+        clonedf = pd.DataFrame(index=assay.ids())
+        clonedf.loc[:, "Genotyped cells (%)"] = per_genotyped
+        clonedf.loc[:, "Mutated cells (%)"] = per_mutated
 
         name = {0: "WT", 1: "HET", 2: "HOM", 3: "MISS"}
         med_ngt, _, _, _ = assay.feature_signature(NGT)
         med_ngt = med_ngt.applymap(lambda x: name[round(x)]).astype(str)
+        labs = assay.get_labels()
+        cnts = np.array([(labs == m).sum() for m in med_ngt.columns])
+        med_ngt.columns = med_ngt.columns + " (" + cnts.astype(str) + ")"
+        med_ngt = med_ngt.iloc[:, cnts.argsort()[::-1]]
 
-        missing = assay.get_attribute(NGT_FILTERED, constraint="row+col")
-        missing = (missing == 3).sum(axis=0) / missing.shape[0]
-        missing = np.round(100 * missing, 2).astype(str) + "%"
-
-        clonedf = med_ngt + " (" + med_af + "%)"
-        clonedf.loc[:, "%Cells missing"] = missing
+        med_af, _, _, _ = assay.feature_signature(AF_MISSING)
+        med_af = med_af.astype(int).astype(str)
+        med_af = med_af.iloc[:, cnts.argsort()[::-1]]
+        med_af.columns = med_ngt.columns
+        clonedf.loc[:, med_ngt.columns] = med_ngt + " (" + med_af + "%)"
 
         clonedf.index = assay.col_attrs[args.VARIANT].copy()
 
@@ -178,6 +211,9 @@ class Compute:
         args.shown_annotations = args.shown_annotations.loc[show_id, :]
         for lab in clonedf.columns:
             args.shown_annotations[lab] = clonedf[lab].values
+
+        if args.annotation_sort_order:
+            args.shown_annotations = args.shown_annotations.sort_values(by=args.annotation_sort_order, ascending=False)
 
         args.shown_annotations.index = np.arange(args.shown_annotations.shape[0]) + 1
 
@@ -218,13 +254,33 @@ class Compute:
             args.fig = ann.cached_func(assay.heatmap, assay, attribute=args.fig_attribute, bars_order=bo, features=feats, convolve=args.convolve, splitby=args.splitby)
             reset_labels()
 
+            # Highlight heatmap
+            order = [np.where(np.isin(assay.ids(), idx))[0][0] for idx in feats]
+            varx = assay.col_attrs[args.VARIANT][order]
+            style_open = "<span style='color:red'>"
+            style_close = "</span>"
+            newticks = []
+
+            for idx, tick in zip(varx, feats):
+                if idx in args.heatmap_highlights:
+                    tick = style_open + str(tick) + style_close
+
+                newticks.append(tick)
+
+            args.fig.update_layout(xaxis_ticktext=newticks, xaxis2_ticktext=newticks)
+
         elif kind == args.UMAP:
             if UMAP_LABEL not in assay.row_attrs:
                 interface.error("UMAP has not been run yet. Run it under the Data Preparation step.")
 
-            modify_labels()
-            args.fig = ann.cached_func(assay.scatterplot, assay, attribute=UMAP_LABEL, colorby=args.colorby, features=args.fig_features)
-            reset_labels()
+            if args.colorby in ann.data.available_labels() + args.SPLITBY:
+                modify_labels()
+                args.fig = ann.cached_func(assay.scatterplot, assay, attribute=UMAP_LABEL, colorby=args.colorby)
+                reset_labels()
+            elif args.colorby == args.DENSITY:
+                args.fig = ann.cached_func(assay.scatterplot, assay, attribute=UMAP_LABEL, colorby="density")
+            else:
+                args.fig = ann.cached_func(assay.scatterplot, assay, attribute=UMAP_LABEL, colorby=args.colorby, features=args.fig_features)
 
         elif kind == args.VIOLINPLOT:
 

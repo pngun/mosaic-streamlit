@@ -28,7 +28,7 @@ class Arguments(ArgumentsHandler):
 
     def general_constants(self):
         self.DNA_LABEL = "Genotype Clone"
-        self.DENSITY = "density"
+        self.DENSITY = "Density"
 
     def preprocess(self):
         """
@@ -55,7 +55,9 @@ class Arguments(ArgumentsHandler):
         self.dp = 10
         self.gq = 30
         self.af = 20
-        self.std = 20
+        self.prct = 50
+        self.mut_prct = 1
+        self.std = 0
 
         self.drop_ids = []
         self.keep_ids = []
@@ -64,6 +66,7 @@ class Arguments(ArgumentsHandler):
     def annotate(self):
         self.VARIANT = "Variant"
         self.annot_types = ["Gene", "Function", "Protein", "Coding Impact", "ClinVar", "DANN"]
+        self.annotation_sort_order = []
 
     def prepare(self):
         """
@@ -212,6 +215,7 @@ class Arguments(ArgumentsHandler):
 
         self.colorby = self.DNA_LABEL
         self.fig_features = []
+        self.heatmap_highlights = []
 
         self.fig_layer = AF_MISSING
 

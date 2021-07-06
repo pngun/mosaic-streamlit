@@ -29,15 +29,17 @@ class Render:
             args.dp = form.slider("Minimum read depth (DP)", min_value=0, max_value=100, value=int(args.get("dp")))
             args.gq = form.slider("Minimum genotype quality (GQ)", min_value=0, max_value=100, value=int(args.get("gq")))
             args.af = form.slider("Minimum mutant allele frequency (AF)", min_value=0, max_value=100, value=int(args.get("af")))
+            args.prct = form.slider("Minimum cells with any genotype (%)", min_value=0, max_value=100, value=int(args.get("prct")))
+            args.mut_prct = form.slider("Minimum mutated cells (%)", min_value=0.0, max_value=20.0, value=float(args.get("mut_prct")))
             args.std = form.slider("Minimum standard deviation of AF", min_value=0, max_value=100, value=int(args.get("std")))
 
             args.drop_ids = form.multiselect("Variants to discard", args.ids, default=args.get("drop_ids"))
             args.keep_ids = form.multiselect("Variants to keep", args.ids, default=args.get("keep_ids"))
 
+            clicked = form.form_submit_button("Process")
+
             if len(args.keep_ids) != 0 and len(args.drop_ids) != 0:
                 interface.error("Cannot keep and drop variants both. Choose only one of the options")
-
-            clicked = form.form_submit_button("Process")
 
             return clicked
 
@@ -96,10 +98,13 @@ class Render:
                 args.cluster_attribute = form.selectbox("Attribute", [UMAP_LABEL, PCA_LABEL, AF_MISSING], key="Prepare Attribute", index=2)
                 cluster_attr = form.slider(*CLUSTER_OPTIONS[args.method][:-1])
                 setattr(args, CLUSTER_OPTIONS[args.method][-1], cluster_attr)
-                args.similarity = form.slider("Similarity", 0.0, 1.0, 0.8)
 
-                description = f"{args.method} on {args.cluster_attribute} with {CLUSTER_OPTIONS[args.method][0].lower()} "
-                description += f"set to {cluster_attr} with {args.similarity} similarity"
+                description = f"{args.method} on {args.cluster_attribute} with {CLUSTER_OPTIONS[args.method][0].lower()} set to {cluster_attr}"
+
+                if args.method != "kmeans":
+                    args.similarity = form.slider("Similarity", 0.0, 1.0, 0.8)
+                    description += f" with {args.similarity} similarity"
+
                 args.cluster_description = description
 
             clicked = form.form_submit_button("Cluster")
@@ -186,6 +191,17 @@ class Render:
         COLORBY = ann.data.available_labels(args.DNA_LABEL) + args.COLORBY
 
         kind = args.visual_type
+        default_features = args.fig_features or list(assay.ids())[: min(len(assay.ids()), 2)]
+
+        # Remove extra variants
+        if set(default_features) - set(assay.ids()) != set():
+            default_features = list(set(default_features) & set(assay.ids()))
+
+        def check_features():
+            if len(args.fig_features) == 0:
+                args.fig_features = None
+            elif args.fig_features != default_features:  # Redraw in case of change
+                interface.rerun()
 
         with args.args_container:
             if kind == args.HEATMAP:
@@ -197,33 +213,31 @@ class Render:
 
             elif kind == args.UMAP:
                 args.colorby = st.selectbox("Color by", COLORBY)
-                args.fig_features = None
                 if args.colorby not in SPLITBY + [args.DENSITY]:
-                    args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 4)])
-                    if len(args.fig_features) == 0:
-                        args.fig_features = None
+                    args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), default_features)
+                    check_features()
 
             elif kind == args.VIOLINPLOT:
                 args.fig_attribute = st.selectbox("Attribute", args.LAYERS)
                 args.splitby = st.selectbox("Group by on Y-axis", SPLITBY)
                 args.points = st.checkbox("Box plot and points", False)
-                args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 2)])
-                if len(args.fig_features) == 0:
-                    args.fig_features = None
+                args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), default_features)
+                check_features()
 
             elif kind == args.RIDGEPLOT:
                 args.fig_attribute = st.selectbox("Attribute", args.LAYERS)
                 args.splitby = st.selectbox("Group by on Y-axis", SPLITBY)
-                args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 4)])
-                if len(args.fig_features) == 0:
-                    args.fig_features = None
+                args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), default_features)
+                check_features()
 
             elif kind == args.STRIPPLOT:
                 args.fig_attribute = st.selectbox("Attribute", args.LAYERS)
-                args.colorby = st.selectbox("Colorby", args.LAYERS)
-                args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()))
-                if len(args.fig_features) == 0:
-                    args.fig_features = None
+                args.colorby = st.selectbox("Color by", args.LAYERS)
+                args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), default_features)
+                check_features()
+
+        options = sorted(args.annot_types)
+        args.annotation_sort_order = st.multiselect("Annotation sort order", options)
 
     def visual(self):
 
@@ -235,8 +249,6 @@ class Render:
                 args.fig.update_layout(plot_bgcolor="rgba(0,0,0,0)")
                 st.plotly_chart(args.fig)
 
-        st.caption("---")
-
         def highlight_het_hom(v):
             if "HET" in v or "HOM" in v:
                 return "background-color: #ededed"
@@ -244,4 +256,4 @@ class Render:
                 return ""
 
         df = args.shown_annotations.astype(str).style.applymap(highlight_het_hom)
-        st.dataframe(df, height=650)
+        st.table(df)

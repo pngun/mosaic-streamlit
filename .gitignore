@@ -3,6 +3,9 @@
 __pycache__
 build/mosaic-streamlit-mac*
 
+# Python virtual environment folder
+venv/
+
 # Logs
 logs
 *.log
