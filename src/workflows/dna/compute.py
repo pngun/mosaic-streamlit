@@ -28,7 +28,7 @@ class Compute:
             interface.error("Cannot drop a whitelist variant.")
 
         if len(args.keep_ids) == 0:
-            passed_vars = ann.data.sample.dna.filter_variants(min_dp=args.dp, min_gq=args.gq, min_vaf=args.af, min_std=args.std)
+            passed_vars = ann.data.sample.dna.filter_variants(min_dp=args.dp, min_gq=args.gq, min_vaf=args.af, min_std=args.std, min_prct_cells=args.prct, min_mut_prct_cells=args.mut_prct)
             dna_vars = set(passed_vars) - set(args.drop_ids)
         else:
             dna_vars = set(args.keep_ids)

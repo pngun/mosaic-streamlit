@@ -29,6 +29,8 @@ class Render:
             args.dp = form.slider("Minimum read depth (DP)", min_value=0, max_value=100, value=int(args.get("dp")))
             args.gq = form.slider("Minimum genotype quality (GQ)", min_value=0, max_value=100, value=int(args.get("gq")))
             args.af = form.slider("Minimum mutant allele frequency (AF)", min_value=0, max_value=100, value=int(args.get("af")))
+            args.prct = form.slider("Minimum cells with any genotype (%)", min_value=0, max_value=100, value=int(args.get("prct")))
+            args.mut_prct = form.slider("Minimum mutated cells (%)", min_value=0.0, max_value=20.0, value=float(args.get("mut_prct")))
             args.std = form.slider("Minimum standard deviation of AF", min_value=0, max_value=100, value=int(args.get("std")))
 
             args.drop_ids = form.multiselect("Variants to discard", args.ids, default=args.get("drop_ids"))
