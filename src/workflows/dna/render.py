@@ -236,6 +236,9 @@ class Render:
                 args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), default_features)
                 check_features()
 
+        options = sorted(args.annot_types)
+        args.annotation_sort_order = st.multiselect("Annotation sort order", options)
+
     def visual(self):
 
         args = self.arguments
@@ -246,8 +249,6 @@ class Render:
                 args.fig.update_layout(plot_bgcolor="rgba(0,0,0,0)")
                 st.plotly_chart(args.fig)
 
-        st.caption("---")
-
         def highlight_het_hom(v):
             if "HET" in v or "HOM" in v:
                 return "background-color: #ededed"
@@ -255,4 +256,4 @@ class Render:
                 return ""
 
         df = args.shown_annotations.astype(str).style.applymap(highlight_het_hom)
-        st.dataframe(df, height=650)
+        st.table(df)

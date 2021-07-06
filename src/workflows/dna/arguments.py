@@ -66,6 +66,7 @@ class Arguments(ArgumentsHandler):
     def annotate(self):
         self.VARIANT = "Variant"
         self.annot_types = ["Gene", "Function", "Protein", "Coding Impact", "ClinVar", "DANN"]
+        self.annotation_sort_order = []
 
     def prepare(self):
         """

@@ -176,19 +176,29 @@ class Compute:
         assay = args.subassay
 
         # Adding cluster information
-        med_af, _, _, _ = assay.feature_signature(AF_MISSING)
-        med_af = med_af.astype(int).astype(str)
+        ngt = assay.get_attribute(NGT_FILTERED, constraint="row+col")
+        mutated = ((ngt == 2) + (ngt == 1)).sum(axis=0)
+        per_mutated = mutated.astype(str) + " (" + (100 * mutated / ngt.shape[0]).astype(int).astype(str) + "%)"
+        genotyped = ngt.shape[0] - (ngt == 3).sum(axis=0)
+        per_genotyped = genotyped.astype(str) + " (" + (100 * genotyped / ngt.shape[0]).astype(int).astype(str) + "%)"
+
+        clonedf = pd.DataFrame(index=assay.ids())
+        clonedf.loc[:, "Genotyped cells (%)"] = per_genotyped
+        clonedf.loc[:, "Mutated cells (%)"] = per_mutated
 
         name = {0: "WT", 1: "HET", 2: "HOM", 3: "MISS"}
         med_ngt, _, _, _ = assay.feature_signature(NGT)
         med_ngt = med_ngt.applymap(lambda x: name[round(x)]).astype(str)
+        labs = assay.get_labels()
+        cnts = np.array([(labs == m).sum() for m in med_ngt.columns])
+        med_ngt.columns = med_ngt.columns + " (" + cnts.astype(str) + ")"
+        med_ngt = med_ngt.iloc[:, cnts.argsort()[::-1]]
 
-        missing = assay.get_attribute(NGT_FILTERED, constraint="row+col")
-        missing = (missing == 3).sum(axis=0) / missing.shape[0]
-        missing = np.round(100 * missing, 2).astype(str) + "%"
-
-        clonedf = med_ngt + " (" + med_af + "%)"
-        clonedf.loc[:, "%Cells missing"] = missing
+        med_af, _, _, _ = assay.feature_signature(AF_MISSING)
+        med_af = med_af.astype(int).astype(str)
+        med_af = med_af.iloc[:, cnts.argsort()[::-1]]
+        med_af.columns = med_ngt.columns
+        clonedf.loc[:, med_ngt.columns] = med_ngt + " (" + med_af + "%)"
 
         clonedf.index = assay.col_attrs[args.VARIANT].copy()
 
@@ -201,6 +211,9 @@ class Compute:
         args.shown_annotations = args.shown_annotations.loc[show_id, :]
         for lab in clonedf.columns:
             args.shown_annotations[lab] = clonedf[lab].values
+
+        if args.annotation_sort_order:
+            args.shown_annotations = args.shown_annotations.sort_values(by=args.annotation_sort_order, ascending=False)
 
         args.shown_annotations.index = np.arange(args.shown_annotations.shape[0]) + 1
 
