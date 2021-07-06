@@ -114,6 +114,8 @@ class Compute:
             if args.method != "kmeans":
                 assay.cluster_cleanup(AF_MISSING, args.similarity)
 
+            args.heatmap_highlights = []
+
         elif args.method == "count":
             try:
                 df = assay.count(layer=args.layer, min_clone_size=args.min_clone_size, group_missing=args.group_missing, ignore_zygosity=args.ignore_zygosity, features=args.features)
@@ -132,6 +134,8 @@ class Compute:
                         new_name = f"{clone} ({score:.2f})"
                         lab_map[str(clone)] = new_name
                 assay.rename_labels(lab_map)
+
+            args.heatmap_highlights = args.features
 
         ann.data.add_label(assay, args.DNA_LABEL)
 
@@ -236,6 +240,21 @@ class Compute:
 
             args.fig = ann.cached_func(assay.heatmap, assay, attribute=args.fig_attribute, bars_order=bo, features=feats, convolve=args.convolve, splitby=args.splitby)
             reset_labels()
+
+            # Highlight heatmap
+            order = [np.where(np.isin(assay.ids(), idx))[0][0] for idx in feats]
+            varx = assay.col_attrs[args.VARIANT][order]
+            style_open = "<span style='color:red'>"
+            style_close = "</span>"
+            newticks = []
+
+            for idx, tick in zip(varx, feats):
+                if idx in args.heatmap_highlights:
+                    tick = style_open + str(tick) + style_close
+
+                newticks.append(tick)
+
+            args.fig.update_layout(xaxis_ticktext=newticks, xaxis2_ticktext=newticks)
 
         elif kind == args.UMAP:
             if UMAP_LABEL not in assay.row_attrs:

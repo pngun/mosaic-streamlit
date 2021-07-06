@@ -212,6 +212,7 @@ class Arguments(ArgumentsHandler):
 
         self.colorby = self.DNA_LABEL
         self.fig_features = []
+        self.heatmap_highlights = []
 
         self.fig_layer = AF_MISSING
 
