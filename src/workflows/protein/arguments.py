@@ -27,7 +27,7 @@ class Arguments(ArgumentsHandler):
 
     def general_constants(self):
         self.PROTEIN_LABEL = "Protein Label"
-        self.DENSITY = "density"
+        self.DENSITY = "Density"
 
     def preprocess(self):
         self.drop_ids = []
@@ -101,6 +101,7 @@ class Arguments(ArgumentsHandler):
 
         self.colorby = self.PROTEIN_LABEL
         self.fig_features = []
+        self.scatter_features = []
 
         self.fig_layer = self.NSP
 

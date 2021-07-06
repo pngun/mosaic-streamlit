@@ -186,6 +186,17 @@ class Render:
         COLORBY = ann.data.available_labels(args.DNA_LABEL) + args.COLORBY
 
         kind = args.visual_type
+        default_features = args.fig_features or list(assay.ids())[: min(len(assay.ids()), 2)]
+
+        # Remove extra variants
+        if set(default_features) - set(assay.ids()) != set():
+            default_features = list(set(default_features) & set(assay.ids()))
+
+        def check_features():
+            if len(args.fig_features) == 0:
+                args.fig_features = None
+            elif args.fig_features != default_features:  # Redraw in case of change
+                interface.rerun()
 
         with args.args_container:
             if kind == args.HEATMAP:
@@ -197,33 +208,28 @@ class Render:
 
             elif kind == args.UMAP:
                 args.colorby = st.selectbox("Color by", COLORBY)
-                args.fig_features = None
                 if args.colorby not in SPLITBY + [args.DENSITY]:
-                    args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 4)])
-                    if len(args.fig_features) == 0:
-                        args.fig_features = None
+                    args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), default_features)
+                    check_features()
 
             elif kind == args.VIOLINPLOT:
                 args.fig_attribute = st.selectbox("Attribute", args.LAYERS)
                 args.splitby = st.selectbox("Group by on Y-axis", SPLITBY)
                 args.points = st.checkbox("Box plot and points", False)
-                args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 2)])
-                if len(args.fig_features) == 0:
-                    args.fig_features = None
+                args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), default_features)
+                check_features()
 
             elif kind == args.RIDGEPLOT:
                 args.fig_attribute = st.selectbox("Attribute", args.LAYERS)
                 args.splitby = st.selectbox("Group by on Y-axis", SPLITBY)
-                args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), list(assay.ids())[: min(len(assay.ids()), 4)])
-                if len(args.fig_features) == 0:
-                    args.fig_features = None
+                args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), default_features)
+                check_features()
 
             elif kind == args.STRIPPLOT:
                 args.fig_attribute = st.selectbox("Attribute", args.LAYERS)
-                args.colorby = st.selectbox("Colorby", args.LAYERS)
-                args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()))
-                if len(args.fig_features) == 0:
-                    args.fig_features = None
+                args.colorby = st.selectbox("Color by", args.LAYERS)
+                args.fig_features = st.multiselect("Choose X-axis", list(assay.ids()), default_features)
+                check_features()
 
     def visual(self):
 

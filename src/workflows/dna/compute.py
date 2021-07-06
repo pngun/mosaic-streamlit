@@ -238,9 +238,14 @@ class Compute:
             if UMAP_LABEL not in assay.row_attrs:
                 interface.error("UMAP has not been run yet. Run it under the Data Preparation step.")
 
-            modify_labels()
-            args.fig = ann.cached_func(assay.scatterplot, assay, attribute=UMAP_LABEL, colorby=args.colorby, features=args.fig_features)
-            reset_labels()
+            if args.colorby in ann.data.available_labels() + args.SPLITBY:
+                modify_labels()
+                args.fig = ann.cached_func(assay.scatterplot, assay, attribute=UMAP_LABEL, colorby=args.colorby)
+                reset_labels()
+            elif args.colorby == args.DENSITY:
+                args.fig = ann.cached_func(assay.scatterplot, assay, attribute=UMAP_LABEL, colorby="density")
+            else:
+                args.fig = ann.cached_func(assay.scatterplot, assay, attribute=UMAP_LABEL, colorby=args.colorby, features=args.fig_features)
 
         elif kind == args.VIOLINPLOT:
 

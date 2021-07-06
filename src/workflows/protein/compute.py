@@ -90,18 +90,20 @@ class Compute:
 
         interface.status(f"Creating {kind}.")
 
-        def modify_labels(kind):
-            if kind in ann.data.available_labels():
-                ann.data.set_label(assay, kind)
+        def modify_labels():
+            if args.splitby in ann.data.available_labels():
+                ann.data.set_label(assay, args.splitby)
+                args.splitby = "label"
 
-            args.splitby = "label"
-            args.colorby = "label"
+            if args.colorby in ann.data.available_labels():
+                ann.data.set_label(assay, args.colorby)
+                args.colorby = "label"
 
         def reset_labels():
             ann.data.set_label(assay, args.PROTEIN_LABEL)
 
         if kind == args.HEATMAP:
-            modify_labels(args.splitby)
+            modify_labels()
             bo = assay.clustered_barcodes(orderby=args.orderby, splitby=args.splitby)
             if not args.cluster_heatmap:
                 labels = assay.get_labels()[[np.where(assay.barcodes() == b)[0][0] for b in bo]]
@@ -123,14 +125,24 @@ class Compute:
             if UMAP_LABEL not in assay.row_attrs:
                 interface.error("UMAP has not been run yet. Run it under the Data Preparation step.")
 
-            modify_labels(args.colorby)
-            args.fig = ann.cached_func(assay.scatterplot, assay, attribute=UMAP_LABEL, colorby=args.colorby, features=args.fig_features)
-            reset_labels()
+            if args.colorby in ann.data.available_labels() + args.SPLITBY:
+                modify_labels()
+                args.fig = ann.cached_func(assay.scatterplot, assay, attribute=UMAP_LABEL, colorby=args.colorby)
+                reset_labels()
+            elif args.colorby == args.DENSITY:
+                args.fig = ann.cached_func(assay.scatterplot, assay, attribute=UMAP_LABEL, colorby="density")
+            else:
+                args.fig = ann.cached_func(assay.scatterplot, assay, attribute=UMAP_LABEL, colorby=args.colorby, features=args.fig_features)
 
         elif kind == args.FEATURE_SCATTER:
-            modify_labels(args.colorby)
-            args.fig = ann.cached_func(assay.feature_scatter, assay, layer=args.fig_layer, ids=args.fig_features, colorby=args.colorby)
-            reset_labels()
+            if args.colorby in ann.data.available_labels() + args.SPLITBY:
+                modify_labels()
+                args.fig = ann.cached_func(assay.feature_scatter, assay, layer=args.fig_layer, ids=args.scatter_features, colorby=args.colorby)
+                reset_labels()
+            elif args.colorby == args.DENSITY:
+                args.fig = ann.cached_func(assay.feature_scatter, assay, layer=args.fig_layer, ids=args.scatter_features, colorby="density")
+            else:
+                args.fig = ann.cached_func(assay.feature_scatter, assay, layer=args.fig_layer, ids=args.scatter_features, colorby=args.colorby, features=args.fig_features)
 
         elif kind == args.VIOLINPLOT:
 
@@ -140,11 +152,11 @@ class Compute:
                     fig.update_traces(points="all", pointpos=-0.5, box_width=0.6, side="positive", marker_size=3)
                 return fig
 
-            modify_labels(args.splitby)
+            modify_labels()
             args.fig = ann.cached_func(violin_with_points, assay, points=args.points, attribute=args.fig_attribute, features=args.fig_features, splitby=args.splitby)
             reset_labels()
 
         elif kind == args.RIDGEPLOT:
-            modify_labels(args.splitby)
+            modify_labels()
             args.fig = ann.cached_func(assay.ridgeplot, assay, attribute=args.fig_attribute, features=args.fig_features, splitby=args.splitby)
             reset_labels()
