@@ -31,6 +31,8 @@ def render():
 
         # Use a single uploader to prevent double processing of the h5 file
         files = st.file_uploader("Load an H5 file and a whitelist", accept_multiple_files=True)
+        files_help = "**.bed or .csv file format is accepted** for whitelist file. Please refer to the documentation for whitelist file format requirements."
+        st.markdown(files_help)
 
         if len(files) == 0:
             h5_file = None
