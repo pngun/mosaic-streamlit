@@ -30,10 +30,10 @@ class Render:
             args.drop_genes = form.multiselect("Genes to drop", args.all_genes)
             args.keep_genes = form.multiselect("Genes to keep", args.all_genes)
 
+            clicked = form.form_submit_button("Process")
+
             if args.keep_genes and args.drop_genes:
                 interface.error("Only one of keep or drop genes can be selected.")
-
-            clicked = form.form_submit_button("Process")
 
             return clicked
 

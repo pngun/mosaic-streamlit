@@ -177,7 +177,7 @@ class Compute:
 
         # Adding cluster information
         ngt = assay.get_attribute(NGT_FILTERED, constraint="row+col")
-        mutated = ((ngt == 2) + (ngt == 1)).sum(axis=0)
+        mutated = ((ngt == 2) | (ngt == 1)).sum(axis=0)
         per_mutated = mutated.astype(str) + " (" + (100 * mutated / ngt.shape[0]).astype(int).astype(str) + "%)"
         genotyped = ngt.shape[0] - (ngt == 3).sum(axis=0)
         per_genotyped = genotyped.astype(str) + " (" + (100 * genotyped / ngt.shape[0]).astype(int).astype(str) + "%)"
