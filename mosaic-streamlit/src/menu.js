@@ -2,10 +2,10 @@ import { Menu } from 'electron'
 import { createAnotherWindow, settingsWindow, aboutWindow } from './main_window'
 
 
-const setApplicationMenu = (mainWindow) => {
+const setApplicationMenu = (mainWindow, appRuntime) => {
   const template = [
     { label: 'Application', submenu: [
-      { label: 'New Window', click: () => { createAnotherWindow() } },
+      { label: 'New Window', click: () => { createAnotherWindow(appRuntime) } },
       {
         label: 'Search',
         accelerator: 'CmdOrCtrl+F',
