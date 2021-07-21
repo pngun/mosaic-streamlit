@@ -1,6 +1,7 @@
 import path from 'path'
 import { BrowserWindow } from 'electron'
 
+
 const newWindow = (options) => {
   const win = new BrowserWindow(options || {
     width: 800,
@@ -18,9 +19,9 @@ const newWindow = (options) => {
   return win
 }
 
-export const createAnotherWindow = () => {
+export const createAnotherWindow = (appRuntime) => {
   const anotherWindow = newWindow()
-  anotherWindow.loadURL('http://localhost:10000/')
+  anotherWindow.loadURL(`http://localhost:${appRuntime.streamlit.port}/`)
 }
 
 export const settingsWindow = (parent) => {

@@ -1,8 +1,10 @@
 import path from 'path'
 import childProcess from 'child_process'
 
+export const log = []
 const electronRoot = path.join(__dirname, "..", "..", "..")
-const serverRunningText = "Network URL"
+const networkUrlText = "Network URL: http"
+const serverRunningText = "External URL: http"
 var serverRunning = false
 var newLineSent = false
 
@@ -70,8 +72,26 @@ const run_on_linux = () => {
   return runtime
 }
 
+const getPortFromLog = (log) => {
+  let port
+  const lines = log.join('').split('\n')
+  const urlWithPort = lines.filter((line) => {
+    return line.indexOf(networkUrlText) >= 0
+  })[0].trim()
+
+  const urlIndex = urlWithPort.indexOf(networkUrlText)
+  if (urlIndex >= 0) {
+    const url = urlWithPort.substring(urlIndex + 20)
+    const portIndex = url.indexOf(':')
+    if (portIndex) {
+      port = url.substring(portIndex + 1).trim()
+    }
+  }
+  return port
+}
+
 export default ((targetWindow, sentry_enabled) => {
-  let runner
+  var runner
   if (process.platform == "win32") {
     runner = run_on_win(sentry_enabled)
   } else if (process.platform == "darwin") {
@@ -81,17 +101,20 @@ export default ((targetWindow, sentry_enabled) => {
   }
 
   runner.stdout.on('data', (data) => {
-    console.log("on data:", data.toString())
-    console.log("\nindex on data:", data.toString().indexOf(serverRunningText))
-    if(!serverRunning && data.toString().indexOf(serverRunningText)) {
+    const output = data.toString()
+    log.push(output)
+    const serverRunningIndex = log.join('').indexOf(serverRunningText)
+    if(!serverRunning && serverRunningIndex > -1) {
+      runner.port = getPortFromLog(log)
       serverRunning = true
       setTimeout(() => {
-        targetWindow.loadURL('http://localhost:10000/')
+        const streamlitUrl = `http://localhost:${runner.port}/` 
+        targetWindow.loadURL(streamlitUrl)
       }, 3000);
     }
+
     if(!newLineSent) {
       runner.stdin.write('\n')
-      console.log('sent newline')
       newLineSent = true
     }
   })

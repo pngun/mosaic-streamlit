@@ -10,7 +10,7 @@ settings.get('sentry.enabled').then((value) => {
     setupSentry()
   }
 })
-const appRuntime = {}
+export const appRuntime = {}
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -19,7 +19,6 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 
 app.on('ready', async () => {
   const mainWindow = createMainWindow()
-  setApplicationMenu(mainWindow)
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
 
   let sentry_enabled = await settings.get('sentry.enabled')
@@ -29,6 +28,8 @@ app.on('ready', async () => {
   }
   const streamlit = runner(mainWindow, sentry_enabled)
   appRuntime['streamlit'] = streamlit
+
+  setApplicationMenu(mainWindow, appRuntime)
 
   ipcMain.on('find-text', (event, text) => {
     if (text.length == 0) return
