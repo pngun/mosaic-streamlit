@@ -9,7 +9,7 @@ STREAMLIT_STATIC_PATH = Path(st.__path__[0]) / "static"
 # and we write output files to it
 DOWNLOADS_PATH = STREAMLIT_STATIC_PATH / "downloads"
 if not DOWNLOADS_PATH.is_dir():
-    DOWNLOADS_PATH.mkdir()
+    DOWNLOADS_PATH.mkdir(parents=True)
 
 STATUS = None
 SUBHEADER = None
