@@ -26,7 +26,7 @@ def run():
 
 def render():
     with st.sidebar:
-        cols = st.beta_columns([11])
+        cols = st.columns([11])
         apply_filter = cols[0].checkbox("Load only pass-filter variants", value=True, key="Filter")
 
         # Use a single uploader to prevent double processing of the h5 file

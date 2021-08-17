@@ -22,7 +22,7 @@ class Render:
 
     def preprocess(self):
         args = self.arguments
-        with st.sidebar.beta_expander("Preprocessing"):
+        with st.sidebar.expander("Preprocessing"):
             interface.info(f"{len(args.ids)} features available")
 
             form = st.form("Preprocessing form")
@@ -45,7 +45,7 @@ class Render:
 
     def prepare(self):
         args = self.arguments
-        with st.sidebar.beta_expander("Data preparation"):
+        with st.sidebar.expander("Data preparation"):
             interface.info(
                 f"Current transformations are:  \n" + f"Scale on {args.get('scale_attribute')}  \n" + f"PCA on {args.get('pca_attribute')}  \n" + f"UMAP on {args.get('umap_attribute')}  \n",
             )
@@ -74,7 +74,7 @@ class Render:
             "graph-community": ("Neighbours", 10, 500, args.get("k"), "k"),
         }
 
-        with st.sidebar.beta_expander("Clustering"):
+        with st.sidebar.expander("Clustering"):
             interface.info(f"Currently clustered using {args.get('cluster_description')}")
 
             args.method = st.selectbox("Method", METHODS, index=2)
@@ -116,34 +116,38 @@ class Render:
         assay = ann.data.sample.dna
         labs = ann.data.sample.dna.get_labels()
         pal = ann.data.sample.dna.get_palette()
+        session_filename = ann.data.sample.name
 
-        with st.sidebar.beta_expander("Customizations"):
+        with st.sidebar.expander("Customizations"):
             interface.info("Rename the clusters or merge them by giving them the same name")
 
-            args.label_map = {}
-            args.keep_labs = []
-            args.palette = pal
+            with st.form(key='customizations-form'):
+                args.label_map = {}
+                args.keep_labs = []
+                args.palette = pal
 
-            lab_set, cnts = np.unique(labs, return_counts=True)
-            lab_set = lab_set[cnts.argsort()[::-1]]
-            for lab in lab_set:
-                col1, col2, col3 = st.beta_columns([0.9, 0.15, 0.15])
-                with col1:
-                    new_name = st.text_input(f"Rename Cluster {lab}", lab)
-                with col2:
-                    st.markdown(f"<p style='margin-bottom:34px'></p>", unsafe_allow_html=True)
-                    args.palette[lab] = st.color_picker("", args.palette[lab], key=f"colorpicker-{lab}")
-                with col3:
-                    st.markdown(f"<p style='margin-bottom:42px'></p>", unsafe_allow_html=True)
-                    keep = st.checkbox("", True, key=f"keep-cells-{lab}-{lab_set}")
-                    if keep:
-                        args.keep_labs.append(lab)
+                lab_set, cnts = np.unique(labs, return_counts=True)
+                lab_set = lab_set[cnts.argsort()[::-1]]
+                for lab in lab_set:
+                    col1, col2, col3 = st.columns([0.9, 0.15, 0.15])
+                    with col1:
+                        new_name = st.text_input(f"Rename Cluster {lab}", lab, key=f"{session_filename}-input-{lab}")
+                    with col2:
+                        st.markdown(f"<p style='margin-bottom:34px'></p>", unsafe_allow_html=True)
+                        args.palette[lab] = st.color_picker("", args.palette[lab], key=f"{session_filename}-colorpicker-{lab}")
+                    with col3:
+                        st.markdown(f"<p style='margin-bottom:42px'></p>", unsafe_allow_html=True)
+                        keep = st.checkbox("", True, key=f"{session_filename}-keep-cells-{lab}")
+                        if keep:
+                            args.keep_labs.append(lab)
 
-                if new_name != lab:
-                    args.keep_labs[-1] = new_name
-                    args.label_map[lab] = new_name
-                    args.palette[new_name] = args.palette[lab]
-                    del args.palette[lab]
+                    if new_name != lab:
+                        args.keep_labs[-1] = new_name
+                        args.label_map[lab] = new_name
+                        args.palette[new_name] = args.palette[lab]
+                        del args.palette[lab]
+
+                st.form_submit_button(label='Update')
 
             st.caption("---")
             interface.info("X-axis labels")
@@ -166,7 +170,7 @@ class Render:
         options = VISUALS[1]
         column_sizes = VISUALS[0]
 
-        columns = st.beta_columns(column_sizes)
+        columns = st.columns(column_sizes)
         for i in range(len(options)):
             with columns[i]:
                 clicked = st.button(options[i], key=f"visual-{options[i]}")
@@ -175,7 +179,7 @@ class Render:
                     track(f"Plot {kind} clicked")
                     args.visual_type = kind
 
-        columns = st.beta_columns([0.75, 0.1, 2])
+        columns = st.columns([0.75, 0.1, 2])
         with columns[0]:
             st.caption("---")
 

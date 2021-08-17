@@ -23,7 +23,7 @@ class Render:
         args = self.arguments
         assay = ann.data.sample.dna
 
-        with st.sidebar.beta_expander("Filter barcodes"):
+        with st.sidebar.expander("Filter barcodes"):
             labtype = ann.data.available_labels()
 
             for lab in labtype:
@@ -33,11 +33,11 @@ class Render:
     def export(self):
         args = self.arguments
 
-        with st.sidebar.beta_expander("Export", expanded=True):
+        with st.sidebar.expander("Export", expanded=True):
             info = st.empty()
             msg = "Export the analyzed data.  \n  \n"
 
-            cols = st.beta_columns([1, 1])
+            cols = st.columns([1, 1])
             with cols[0]:
                 args.export_kind = st.selectbox("Format", args.export_options)
 
@@ -63,7 +63,7 @@ class Render:
         options = VISUALS[args.category][1]
         column_sizes = VISUALS[args.category][0]
 
-        columns = st.beta_columns(column_sizes)
+        columns = st.columns(column_sizes)
         with columns[0]:
             category = st.selectbox("", list(VISUALS.keys()))
             if category != args.category:
@@ -79,7 +79,7 @@ class Render:
                     track(f"Plot {kind} clicked")
                     args.visual_type = kind
 
-        columns = st.beta_columns([0.75, 0.1, 2])
+        columns = st.columns([0.75, 0.1, 2])
         with columns[0]:
             st.caption("---")
 
