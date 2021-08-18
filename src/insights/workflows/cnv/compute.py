@@ -33,7 +33,8 @@ class Compute:
         reads = assay.get_attribute(READS)
         per_cells = 100 * (reads > 0).sum(axis=0) / reads.shape[0]
         pass_amps = (per_cells > args.min_cells).values
-        pass_amps = np.logical_and(pass_amps, keep_amps, ~drop_amps)
+        pass_amps = np.logical_and(pass_amps, keep_amps)
+        pass_amps = np.logical_and(pass_amps, ~drop_amps)
 
         if not pass_amps.any():
             interface.error("All amplicons were dropped. Reduce the thresholds for the filters.")
