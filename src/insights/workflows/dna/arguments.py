@@ -1,8 +1,7 @@
 import pandas as pd
+import workflows.general.analysis as ann
 from missionbio.h5.constants import AF, DP, GQ, NGT, SAMPLE
 from missionbio.mosaic.constants import AF_MISSING, NGT_FILTERED, SCALED_LABEL
-
-import workflows.general.analysis as ann
 from workflows.general.handler import ArgumentsHandler
 
 

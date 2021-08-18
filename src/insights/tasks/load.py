@@ -2,12 +2,11 @@ import os
 import tempfile
 import time
 
+import interface
 import missionbio.mosaic.io as mio
 import numpy as np
 import streamlit as st
 from missionbio.h5.data.reader import H5Reader
-
-import interface
 from whitelist_import.bed_reader import BedReader
 from whitelist_import.columns import ALT, CHROM, POS, REF, WHITELIST
 
@@ -26,7 +25,7 @@ def run():
 
 def render():
     with st.sidebar:
-        cols = st.beta_columns([11])
+        cols = st.columns([11])
         apply_filter = cols[0].checkbox("Load only pass-filter variants", value=True, key="Filter")
 
         # Use a single uploader to prevent double processing of the h5 file

@@ -1,9 +1,8 @@
+import interface
 import streamlit as st
+import workflows.general.analysis as ann
 from missionbio.h5.constants import CHROM
 from missionbio.mosaic.constants import GENE_NAME
-
-import interface
-import workflows.general.analysis as ann
 from segment import track
 
 
@@ -21,7 +20,7 @@ class Render:
 
     def preprocess(self):
         args = self.arguments
-        with st.sidebar.beta_expander("Preprocessing"):
+        with st.sidebar.expander("Preprocessing"):
             interface.info(f"{len(args.ids)} features available")
 
             form = st.form("Preprocessing form")
@@ -41,7 +40,7 @@ class Render:
         args = self.arguments
         assay = ann.data.sample.cnv
 
-        with st.sidebar.beta_expander("Data preparation", expanded=True):
+        with st.sidebar.expander("Data preparation", expanded=True):
             info = st.empty()
 
             LABELS = ann.data.available_labels(args.DNA_LABEL)
@@ -69,7 +68,7 @@ class Render:
         options = VISUALS[1]
         column_sizes = VISUALS[0]
 
-        columns = st.beta_columns(column_sizes)
+        columns = st.columns(column_sizes)
         for i in range(len(options)):
             with columns[i]:
                 clicked = st.button(options[i], key=f"visual-{options[i]}")
@@ -78,7 +77,7 @@ class Render:
                     track(f"Plot {kind} clicked")
                     args.visual_type = kind
 
-        columns = st.beta_columns([0.75, 0.1, 2])
+        columns = st.columns([0.75, 0.1, 2])
         with columns[0]:
             st.caption("---")
 

@@ -24,7 +24,7 @@ if __name__ == "__main__":
 
     port = find_a_port()
 
-    sys.argv = ["streamlit", "run", f"{launchdir}/src/app.py", "--global.developmentMode=false"]
+    sys.argv = ["streamlit", "run", f"{launchdir}/insights/app.py", "--global.developmentMode=false"]
     if GUI_FRONTEND_RUNNING:
         sys.argv += [
             f"--server.port={port}",
