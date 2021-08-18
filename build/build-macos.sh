@@ -6,5 +6,6 @@ pyinstaller --additional-hooks-dir=hooks \
   --hidden-import sentry_sdk \
   --clean -w run.py
 
+cp -rp ../src/insights ./dist/run.app/Contents/MacOS/
 rm -rf ./dist/run/
 mv ./dist/run.app ./dist/runnable
