@@ -1,9 +1,8 @@
+import interface
 import streamlit as st
+import workflows.general.analysis as ann
 from missionbio.h5.constants import CHROM
 from missionbio.mosaic.constants import GENE_NAME
-
-import interface
-import workflows.general.analysis as ann
 from segment import track
 
 

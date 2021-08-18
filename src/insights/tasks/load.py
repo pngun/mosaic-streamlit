@@ -2,12 +2,11 @@ import os
 import tempfile
 import time
 
+import interface
 import missionbio.mosaic.io as mio
 import numpy as np
 import streamlit as st
 from missionbio.h5.data.reader import H5Reader
-
-import interface
 from whitelist_import.bed_reader import BedReader
 from whitelist_import.columns import ALT, CHROM, POS, REF, WHITELIST
 

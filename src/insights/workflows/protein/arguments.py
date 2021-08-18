@@ -1,7 +1,6 @@
+import workflows.general.analysis as ann
 from missionbio.h5.constants import SAMPLE
 from missionbio.mosaic.constants import SCALED_LABEL
-
-import workflows.general.analysis as ann
 from workflows.general.handler import ArgumentsHandler
 
 

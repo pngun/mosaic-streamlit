@@ -2,10 +2,9 @@
 import atexit
 import sys
 
-from sentry_sdk import capture_exception
-
 from segment import track
 from sentry import setup_sentry
+from sentry_sdk import capture_exception
 
 atexit.register(lambda: track("Application Closed"))
 
@@ -28,9 +27,8 @@ import streamlit.server.server_util  # noqa: E402
 
 streamlit.server.server_util.MESSAGE_SIZE_LIMIT = 500 * 1e6
 
-import streamlit as st  # noqa: E402
-
 import interface  # noqa: E402
+import streamlit as st  # noqa: E402
 from tasks import load, selection  # noqa: E402
 
 track("Application Launched")

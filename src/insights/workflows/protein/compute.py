@@ -1,9 +1,8 @@
+import interface
 import numpy as np
 import pandas as pd
-from missionbio.mosaic.constants import NORMALIZED_READS, UMAP_LABEL
-
-import interface
 import workflows.general.analysis as ann
+from missionbio.mosaic.constants import NORMALIZED_READS, UMAP_LABEL
 
 
 class Compute:

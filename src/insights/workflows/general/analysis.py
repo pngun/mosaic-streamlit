@@ -1,10 +1,9 @@
+import interface
 import pandas as pd
 import streamlit as st
 from missionbio.mosaic.dna import Dna as modna
 from missionbio.mosaic.protein import Protein as moprotein
 from missionbio.mosaic.sample import Sample as mosample
-
-import interface
 
 
 class Data:

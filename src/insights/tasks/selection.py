@@ -1,9 +1,8 @@
 import importlib
 
 import streamlit as st
-from missionbio.mosaic.sample import Sample as mosample
-
 import workflows.general.analysis as ann
+from missionbio.mosaic.sample import Sample as mosample
 
 """
 The key is the name of the module

@@ -1,11 +1,10 @@
+import interface
 import numpy as np
 import pandas as pd
 import requests
+import workflows.general.analysis as ann
 from missionbio.h5.constants import ID, NGT
 from missionbio.mosaic.constants import AF_MISSING, NGT_FILTERED, UMAP_LABEL
-
-import interface
-import workflows.general.analysis as ann
 from whitelist_import.columns import WHITELIST
 
 

@@ -1,7 +1,6 @@
-from missionbio.mosaic.constants import NORMALIZED_READS
-
 import interface
 import workflows.general.analysis as ann
+from missionbio.mosaic.constants import NORMALIZED_READS
 from segment import track
 
 from .arguments import Arguments

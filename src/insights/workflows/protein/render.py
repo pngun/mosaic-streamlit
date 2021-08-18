@@ -1,9 +1,8 @@
+import interface
 import numpy as np
 import streamlit as st
-from missionbio.mosaic.constants import PCA_LABEL, SCALED_LABEL, UMAP_LABEL
-
-import interface
 import workflows.general.analysis as ann
+from missionbio.mosaic.constants import PCA_LABEL, SCALED_LABEL, UMAP_LABEL
 from segment import track
 
 
@@ -136,7 +135,7 @@ class Render:
         with st.sidebar.expander("Customizations"):
             interface.info("Rename the clusters or merge them by giving them the same name")
 
-            with st.form(key='customizations-form'):
+            with st.form(key="customizations-form"):
                 args.label_map = {}
                 args.keep_labs = []
                 args.palette = pal
@@ -162,7 +161,7 @@ class Render:
                         args.palette[new_name] = args.palette[lab]
                         del args.palette[lab]
 
-                st.form_submit_button(label='Update')
+                st.form_submit_button(label="Update")
 
         if len(args.keep_labs) == 0:
             interface.error("At least one label must be selected.")

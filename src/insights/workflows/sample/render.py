@@ -1,9 +1,8 @@
+import interface
 import matplotlib.pyplot as plt
 import streamlit as st
-from missionbio.h5.constants import SAMPLE
-
-import interface
 import workflows.general.analysis as ann
+from missionbio.h5.constants import SAMPLE
 from segment import track
 
 
