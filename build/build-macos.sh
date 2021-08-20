@@ -1,4 +1,10 @@
+rm -rf build dist run.spec __pycache__
+
 pyinstaller --additional-hooks-dir=hooks \
+  --paths ../src \
+  --copy-metadata streamlit \
+  --collect-data altair \
+  --collect-all insights \
   --hidden-import insights \
   --hidden-import missionbio.mosaic \
   --hidden-import missionbio.h5 \
@@ -6,6 +12,5 @@ pyinstaller --additional-hooks-dir=hooks \
   --hidden-import sentry_sdk \
   --clean -w run.py
 
-cp -rp ../src/insights ./dist/run.app/Contents/MacOS/
 rm -rf ./dist/run/
 mv ./dist/run.app ./dist/runnable

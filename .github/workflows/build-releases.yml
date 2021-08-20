@@ -27,6 +27,21 @@ jobs:
         with:
           node-version: '14'
 
+      - name: Set PYTHONPATH
+        shell: bash
+        run: |
+          export PYTHONPATH="${GITHUB_WORKSPACE}/src"
+          echo "Current PYTHONPATH: $PYTHONPATH"
+          ls "${GITHUB_WORKSPACE}/src"
+          python -c "import sys;print(sys.path)"
+          python -c "import insights;print(insights)"
+          echo "PYTHONPATH=${PYTHONPATH}" >> $GITHUB_ENV
+
+      - name: Check PYTHONPATH
+        shell: bash
+        run: |
+          python -c "import insights;print(insights)"
+
       - name: Build release(s)
         uses: MissionBio/actions@v0.1.3
         with:
@@ -35,6 +50,7 @@ jobs:
           electron_path: mosaic-streamlit
         env:
           MOSAIC_STREAMLIT_GUI_RUNNING: true
+          PYTHONPATH: ${{ env.PYTHONPATH }}
 
       - uses: actions/upload-artifact@v2
         with:
