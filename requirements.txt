@@ -1,5 +1,5 @@
-wheel==0.36.2
-setuptools==57.0.0
+#wheel==0.36.2
+#setuptools==57.0.0
 
 altair==4.1.0
 altgraph==0.17
@@ -70,7 +70,8 @@ pyarrow==3.0.0
 pycparser==2.20
 pydeck==0.6.1
 Pygments==2.8.1
-pyinstaller==4.5.1
+#pyinstaller==4.5.1
+git+https://github.com/pyinstaller/pyinstaller.git@develop
 pyinstaller-hooks-contrib==2021.2
 pynndescent==0.5.4
 pyparsing==2.4.7
