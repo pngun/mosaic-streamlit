@@ -1,8 +1,8 @@
 import interface
 import numpy as np
 import pandas as pd
-import requests
 import workflows.general.analysis as ann
+from annotations_api import get_annotations_from_api
 from missionbio.h5.constants import ID, NGT
 from missionbio.mosaic.constants import AF_MISSING, NGT_FILTERED, UMAP_LABEL
 from whitelist_import.columns import WHITELIST
@@ -58,12 +58,8 @@ class Compute:
             interface.status("Fetching Genotype annotations")
 
             variants = variants[missing_variants]
-            renamed_variants = np.array([var.replace(":", "-").replace("/", "-") for var in variants], dtype="str")
-
-            url = "https://api.missionbio.io/annotations/v1/variants?ids=" + ",".join(renamed_variants)
             try:
-                r = requests.get(url=url)
-                data = r.json()
+                data = get_annotations_from_api(variants)
             except Exception:
                 self.no_internet_connection = True
                 data = {}
@@ -236,7 +232,7 @@ class Compute:
 
         if kind == args.HEATMAP:
             modify_labels()
-            bo = assay.clustered_barcodes(orderby=args.orderby, splitby=args.splitby)
+            bo = assay.clustered_barcodes(orderby=args.orderby, splitby=args.splitby, override=True)
             if not args.cluster_heatmap:
                 labels = assay.get_labels()[[np.where(assay.barcodes() == b)[0][0] for b in bo]]
                 bo = []
@@ -244,7 +240,7 @@ class Compute:
                     bo.extend(assay.barcodes(lab))
                 bo = np.array(bo)
 
-            feats = assay.clustered_ids(orderby=args.orderby)
+            feats = assay.clustered_ids(orderby=args.orderby, override=True)
 
             # Need to convert types to ensure proper caching
             bo = bo.astype(str)
