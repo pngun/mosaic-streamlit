@@ -70,6 +70,8 @@ echo "NOTARIZE_APP:\n$NOTARIZE_APP"
 # NID="- Request UUID (see $NOTARIZE_APP) -"
 # Check progress: xcrun altool --notarization-info $NID -u $APPLE_ID -p $APPLE_PASSWORD
 
+set +e
+
 for (( ; ; ))
 do
     xcrun stapler staple "$DMG_PATH"
@@ -84,4 +86,4 @@ do
     fi
 done
 
-spctl --assess --type open --context context:primary-signature --verbose $DMG_PATH
+spctl --assess --type open --context context:primary-signature --verbose "$DMG_PATH"

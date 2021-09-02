@@ -1,4 +1,10 @@
+#!/usr/bin/env bash
+
 rm -rf build dist run.spec __pycache__
+export PYTHONPATH=$PWD/../src:$PYTHONPATH
+echo "PYTHONPATH: $PYTHONPATH"
+
+set -e
 
 pyinstaller --additional-hooks-dir=hooks \
   --paths ../src \
