@@ -30,3 +30,18 @@ to be accessible throught the UI.
 * The parameters render the saved values when loading an analyzed file
 * Documenting the code
 * Documenting the procedure to add new workflows
+
+## Architecture
+
+Streamlit runs as script top-down and re-runs the whole thing if anything changes.
+
+The code for loading h5 files and workflow selection is in the `src/insights/tasks` folder.
+
+After H5 file is loaded the selected action in `src/insights/workflows` is executed.
+Workflows for DNA, CNV, Protein and Multi-omics have their subfolder with all the steps required to execute workflow.
+
+Steps generally include `run`, `compute` and `render` with some additional steps if required by the workflow.
+
+## Build(s)
+
+Check GitHub Actions in `.github`, the action workflow uses https://github.com/MissionBio/actions to automatically build Windows/macOS installers.
