@@ -42,9 +42,40 @@ Workflows for DNA, CNV, Protein and Multi-omics have their subfolder with all th
 
 Steps generally include `run`, `compute` and `render` with some additional steps if required by the workflow.
 
+The `mosaic-streamlit` folder contains the JavaScript/Electron application with `electron-forge` toolchain which is used to wrap the Streamlit application and provide the desktop features.
+
+The `runner.js` is used to start the Streamlit application as a child process with a few other UI elements available in `main_window.js`.
+
+
 ## Build(s)
 
 Check GitHub Actions in `.github`, the action workflow uses https://github.com/MissionBio/actions to automatically build Windows/macOS installers.
+
+
+## Sign/notarize the macOS Installer
+
+Make sure you have Python, Node (with yarn) and XCode environments installed.
+To properly sign/notarize the application on macOS you need private key and certificate active in the keychain and these environment variables available:
+
+```shell
+export APPLE_DEVELOPER_ID="Developer ID Application: ..."
+export APPLE_ID=...
+export APPLE_PASSWORD=...
+```
+
+If you have Python and Node environments with all the requirements installed you can run:
+```shell
+$ cd build
+$ ./sign-for-macos.sh
+```
+
+This will build the Python code with PyInstaller, copy it to the JavaScript/Electron app and build it with `electron-forge` toolchain.
+It will also `codesign` the application and DMG and notarize it.
+
+Note:
+Make sure that you build/sign/notarize the app on the oldest macOS version you plan to support.
+You can use Mac/Nitro instances on AWS to sign/notarize the application.
+
 
 ## Sign the Windows Installer
 
