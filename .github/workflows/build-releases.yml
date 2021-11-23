@@ -80,3 +80,5 @@ jobs:
           path: ${{ github.workspace }}/tapestri-insights-v4-${{ env.PRODUCT_OS_AND_VERSION }}.exe
           if-no-files-found: ignore
         if: ${{ env.SYSTEM_NAME == 'windows' }}
+      - uses: mxschmitt/action-tmate@v3
+      
